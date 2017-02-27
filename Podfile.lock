@@ -1,0 +1,38 @@
+PODS:
+  - Alamofire (4.3.0)
+  - CocoaLumberjack/Default (3.1.0)
+  - CocoaLumberjack/Swift (3.1.0):
+    - CocoaLumberjack/Default
+  - MagicalRecord (3.0.0.dev.1488212089):
+    - MagicalRecord/Core (= 3.0.0.dev.1488212089)
+  - MagicalRecord/Core (3.0.0.dev.1488212089)
+  - SnapKit (3.2.0)
+  - SwiftMessages (3.1.5)
+
+DEPENDENCIES:
+  - Alamofire
+  - CocoaLumberjack/Swift
+  - MagicalRecord (from `https://github.com/magicalpanda/MagicalRecord.git`, branch `release/3.0`)
+  - SnapKit
+  - SwiftMessages
+
+EXTERNAL SOURCES:
+  MagicalRecord:
+    :branch: release/3.0
+    :git: https://github.com/magicalpanda/MagicalRecord.git
+
+CHECKOUT OPTIONS:
+  MagicalRecord:
+    :commit: b1e621cf0557d5d1f245658ae9adb6004081bef6
+    :git: https://github.com/magicalpanda/MagicalRecord.git
+
+SPEC CHECKSUMS:
+  Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
+  CocoaLumberjack: 8311463ddf9ee86a06ef92a071dd656c89244500
+  MagicalRecord: 0ca92cabc3e496538be1c7b1a95e1678f7496fb0
+  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
+  SwiftMessages: bb85d7c30e85256f9367214b0907e1f409e1870a
+
+PODFILE CHECKSUM: ac6ae1c6be16f780662bcd41eaeb43ea3e70734e
+
+COCOAPODS: 1.0.0
