@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tPs-BB-tZB">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Rates-->
+        <scene sceneID="m52-fU-IL1">
+            <objects>
+                <tableViewController title="Rates" id="Eez-kW-8pj" customClass="RatesTableViewController" customModule="SwiftTrader" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="gMV-A0-izg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <connections>
+                            <outlet property="dataSource" destination="Eez-kW-8pj" id="UcV-xs-NjA"/>
+                            <outlet property="delegate" destination="Eez-kW-8pj" id="s7s-IV-1ki"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Rates" id="Zbw-Y2-Gn6">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="oc3-mj-hTu" userLabel="Add">
+                            <connections>
+                                <segue destination="6VH-3f-ilc" kind="show" id="xV0-vM-3UZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5ud-7B-guh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1021" y="-268"/>
+        </scene>
+        <!--Add Conversion-->
+        <scene sceneID="nkE-cD-s4X">
+            <objects>
+                <viewController title="Add Conversion" id="6VH-3f-ilc" customClass="AddConversionViewController" customModule="SwiftTrader" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Bg7-J9-b3F"/>
+                        <viewControllerLayoutGuide type="bottom" id="UKS-4E-lV0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3x5-p5-mIM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ne5-P0-j6Y" userLabel="Description">
+                                <rect key="frame" x="16" y="72" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rs7-3v-4yN" userLabel="From">
+                                <rect key="frame" x="16" y="319" width="36" height="30"/>
+                                <state key="normal" title="From">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <segue destination="a9N-Ef-Uyl" kind="show" identifier="fromCodeSegue" id="qYg-wW-BF5">
+                                        <nil key="action"/>
+                                    </segue>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GVE-rR-vZF" userLabel="To">
+                                <rect key="frame" x="329" y="319" width="30" height="30"/>
+                                <state key="normal" title="To">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <segue destination="a9N-Ef-Uyl" kind="show" identifier="toCodeSegue" id="CfF-OH-qH9">
+                                        <nil key="action"/>
+                                    </segue>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="GVE-rR-vZF" firstAttribute="leading" relation="lessThanOrEqual" secondItem="rs7-3v-4yN" secondAttribute="trailing" constant="502" id="D3N-H4-GAP"/>
+                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="trailing" secondItem="3x5-p5-mIM" secondAttribute="trailingMargin" id="IMw-5K-AfX"/>
+                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="top" secondItem="Bg7-J9-b3F" secondAttribute="bottom" constant="8" id="Z3F-JY-uJP"/>
+                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="leading" secondItem="3x5-p5-mIM" secondAttribute="leadingMargin" id="jeG-al-qrc"/>
+                            <constraint firstItem="rs7-3v-4yN" firstAttribute="centerY" secondItem="GVE-rR-vZF" secondAttribute="centerY" id="nhV-ON-NgT"/>
+                            <constraint firstItem="GVE-rR-vZF" firstAttribute="trailing" secondItem="3x5-p5-mIM" secondAttribute="trailingMargin" id="nqV-zT-RAF"/>
+                            <constraint firstAttribute="centerY" secondItem="rs7-3v-4yN" secondAttribute="centerY" id="ufF-Bu-3Be"/>
+                            <constraint firstItem="rs7-3v-4yN" firstAttribute="leading" secondItem="3x5-p5-mIM" secondAttribute="leadingMargin" id="uns-wd-WaO"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Add Conversion" id="DAN-Mi-mMw">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="Tm1-im-cbH"/>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="lHl-yT-8ZB">
+                            <connections>
+                                <action selector="saveButtonPressed:" destination="6VH-3f-ilc" id="e8k-RQ-G9T"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="descriptionLabel" destination="ne5-P0-j6Y" id="O7Y-D2-K2F"/>
+                        <outlet property="fromCurrencyButton" destination="rs7-3v-4yN" id="zgB-GH-bqy"/>
+                        <outlet property="toCurrencyButton" destination="GVE-rR-vZF" id="EBo-bf-U8L"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7O6-GB-x2r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1709" y="-268"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="6IM-pU-G4B">
+            <objects>
+                <navigationController id="tPs-BB-tZB" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bqM-ku-XIA">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Eez-kW-8pj" kind="relationship" relationship="rootViewController" id="0dB-wZ-7TK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cha-PN-5am" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="201" y="-268"/>
+        </scene>
+        <!--Currencies-->
+        <scene sceneID="gox-eE-nAZ">
+            <objects>
+                <tableViewController title="Currencies" id="a9N-Ef-Uyl" customClass="CurrenciesTableViewController" customModule="SwiftTrader" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Sxm-Pa-0la">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="gray" indentationWidth="10" reuseIdentifier="CurrenciesCell" textLabel="j57-Mw-UyI" style="IBUITableViewCellStyleDefault" id="5jn-Op-UpG">
+                                <rect key="frame" x="0.0" y="22" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5jn-Op-UpG" id="DwQ-Vg-zpb">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="NewTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="j57-Mw-UyI">
+                                            <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="a9N-Ef-Uyl" id="whU-ep-AQ5"/>
+                            <outlet property="delegate" destination="a9N-Ef-Uyl" id="YJ4-Ws-JOC"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Currencies" id="hQP-Rl-Ixp">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="MnA-Od-37v"/>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9u8-CA-fz3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1709" y="-970"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="CfF-OH-qH9"/>
+    </inferredMetricsTieBreakers>
+</document>
