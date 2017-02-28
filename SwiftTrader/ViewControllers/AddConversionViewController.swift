@@ -74,14 +74,19 @@ extension AddConversionViewController {
             return
         }
         
+        var errorOccured: Error?
+        
         ServicesManager.manager.dataProviderService?.dataProvider.addConversion(source: source, target: targetCode, onError: {
             [unowned self]
             (error) in
+            errorOccured = error
             self.showNotificationError(error: error)
-        }, completion: { (result, error) in            
+        }, completion: {
+            [unowned self]
+            (result, error) in
             self.showNotificationError(error: error)
             
-            if error == nil {
+            if error == nil && errorOccured == nil {
                 _ = self.navigationController?.popViewController(animated: true)
             }
         })

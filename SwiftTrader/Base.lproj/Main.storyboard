@@ -47,12 +47,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ne5-P0-j6Y" userLabel="Description">
-                                <rect key="frame" x="16" y="72" width="343" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rs7-3v-4yN" userLabel="From">
                                 <rect key="frame" x="16" y="319" width="36" height="30"/>
                                 <state key="normal" title="From">
@@ -79,9 +73,6 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="GVE-rR-vZF" firstAttribute="leading" relation="lessThanOrEqual" secondItem="rs7-3v-4yN" secondAttribute="trailing" constant="502" id="D3N-H4-GAP"/>
-                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="trailing" secondItem="3x5-p5-mIM" secondAttribute="trailingMargin" id="IMw-5K-AfX"/>
-                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="top" secondItem="Bg7-J9-b3F" secondAttribute="bottom" constant="8" id="Z3F-JY-uJP"/>
-                            <constraint firstItem="ne5-P0-j6Y" firstAttribute="leading" secondItem="3x5-p5-mIM" secondAttribute="leadingMargin" id="jeG-al-qrc"/>
                             <constraint firstItem="rs7-3v-4yN" firstAttribute="centerY" secondItem="GVE-rR-vZF" secondAttribute="centerY" id="nhV-ON-NgT"/>
                             <constraint firstItem="GVE-rR-vZF" firstAttribute="trailing" secondItem="3x5-p5-mIM" secondAttribute="trailingMargin" id="nqV-zT-RAF"/>
                             <constraint firstAttribute="centerY" secondItem="rs7-3v-4yN" secondAttribute="centerY" id="ufF-Bu-3Be"/>
@@ -97,7 +88,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="descriptionLabel" destination="ne5-P0-j6Y" id="O7Y-D2-K2F"/>
                         <outlet property="fromCurrencyButton" destination="rs7-3v-4yN" id="zgB-GH-bqy"/>
                         <outlet property="toCurrencyButton" destination="GVE-rR-vZF" id="EBo-bf-U8L"/>
                     </connections>

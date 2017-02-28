@@ -15,21 +15,35 @@ class CurrenciesTableViewController: BaseTableViewController {
     var delegate: AddConversionBackProtocol?
     var cleanDataSource: [String]?
     var dataSourcePredicate: NSPredicate?
+    var searchController: UISearchController?
+}
+
+//MARK: DataSource
+extension CurrenciesTableViewController {
+    func updateDataSource() {
+        cleanDataSource = ServicesManager.manager.databaseService?.currencies()
+    }
     var dataSource: [String]? {
         guard let predicate = dataSourcePredicate else {
             return cleanDataSource
         }
         return cleanDataSource?.filter({predicate.evaluate(with: $0)})
     }
-    var searchController = UISearchController(searchResultsController: nil)
-    func updateDataSource() {
-        cleanDataSource = ServicesManager.manager.databaseService?.currencies()
-    }
+}
+
+//MARK: SearchViewController
+extension CurrenciesTableViewController {
     func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController = UISearchController(searchResultsController: nil)
+        searchController?.searchResultsUpdater = self
+        searchController?.dimsBackgroundDuringPresentation = false
         definesPresentationContext = true
-        tableView.tableHeaderView = searchController.searchBar
+        // bugs
+        // thanks! http://stackoverflow.com/questions/32282401/attempting-to-load-the-view-of-a-view-controller-while-it-is-deallocating-uis
+        if #available(iOS 9.0, *) {
+            self.searchController?.loadViewIfNeeded()
+        }
+        tableView.tableHeaderView = searchController?.searchBar
     }
 }
 
