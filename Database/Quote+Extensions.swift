@@ -86,6 +86,10 @@ extension Quote {
     }
     
     func update(quote: Double, at timestamp: Double) {
+        guard self.timestamp != timestamp else {
+            return
+        }
+        
         if firstUpdate() {
             self.quote = quote
         }
@@ -93,6 +97,7 @@ extension Quote {
             self.previousQuote = self.quote
             self.quote = quote
         }
+        
         self.timestamp = timestamp
     }
     
