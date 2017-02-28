@@ -13,9 +13,26 @@ protocol AddConversionBackProtocol {
 }
 class AddConversionViewController: UIViewController {
     
-    enum destinationType: String{
+    enum DestinationType: String{
         case from
         case to
+        var segue: String {
+            switch self {
+            case .from: return "fromCodeSegue"
+            case .to: return "toCodeSegue"
+            }
+        }
+        init?(segue: String?) {
+            guard let theSegue = segue else {
+                return nil
+            }
+            
+            switch theSegue {
+            case DestinationType.from.segue: self = .from
+            case DestinationType.to.segue: self = .to
+            default: return nil
+            }
+        }
     }
     
     var conversion: ConversionModel = ConversionModel()
@@ -39,13 +56,7 @@ extension AddConversionViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let controller = segue.destination as? CurrenciesTableViewController {
             controller.delegate = self
-            if let segueIdentifier = segue.identifier {
-                switch segueIdentifier {
-                case "fromCodeSegue": controller.currencyDestination = destinationType.from.rawValue
-                case "toCodeSegue": controller.currencyDestination = destinationType.to.rawValue
-                default: break
-                }
-            }
+            controller.currencyDestination = DestinationType(segue: segue.identifier)?.rawValue
         }
         hideAllNotifications()
     }
@@ -84,15 +95,17 @@ extension AddConversionViewController: AddConversionBackProtocol {
             return
         }
         
-        if let type = destinationType(rawValue: d) {
-            switch type {
-            case .from:
-                conversion.fromCode = code
-                self.fromCurrencyButton.setTitle(conversion.fromCode, for: .normal)
-            case .to:
-                conversion.toCode = code
-                self.toCurrencyButton.setTitle(conversion.toCode, for: .normal)
-            }
+        guard let type = DestinationType(rawValue: d) else {
+            return
+        }
+        
+        switch type {
+        case .from:
+            conversion.fromCode = code
+            self.fromCurrencyButton.setTitle(conversion.fromCode, for: .normal)
+        case .to:
+            conversion.toCode = code
+            self.toCurrencyButton.setTitle(conversion.toCode, for: .normal)
         }
     }
 }
