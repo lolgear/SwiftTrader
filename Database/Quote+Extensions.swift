@@ -94,6 +94,8 @@ extension Quote {
             self.quote = quote
         }
         else {
+            //TODO: fix later.
+            //Known bug: bad access.
             self.previousQuote = self.quote
             self.quote = quote
         }
