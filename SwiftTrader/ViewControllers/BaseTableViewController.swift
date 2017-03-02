@@ -42,9 +42,7 @@ class BaseTableViewController: UITableViewController {
     }
     
     lazy var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? = {
-        let controller = self.createFetchedResultsController()
-        controller?.delegate = self
-        return controller
+        return self.createFetchedResultsController()
     }()
 }
 

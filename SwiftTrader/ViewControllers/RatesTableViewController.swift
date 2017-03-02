@@ -13,6 +13,11 @@ import Database
 
 class RatesTableViewController : BaseTableViewController {
     var listener: NSFetchedResultsController<NSFetchRequestResult>?
+    lazy var conversionsResultsDelegate: NSFetchedResultsControllerDelegate = {
+        let delegate = ConversionsFetchedResultsDelegate()
+        delegate.ratesController = self
+        return delegate
+    }()
 }
 
 //MARK: Listener
@@ -35,9 +40,10 @@ extension RatesTableViewController {
         service?.dataProvider.updateQuotes(completion: {
             [unowned self]
             (result, error) in
-            self.showNotificationError(error: error)
-            // stop spinning refresh?
-            sender?.endRefreshing()
+            DispatchQueue.main.async {
+                self.showNotificationError(error: error)
+                sender?.endRefreshing()
+            }
         })
     }
 }
@@ -55,7 +61,7 @@ extension RatesTableViewController {
 //MARK: FetchedResultsController
 extension RatesTableViewController {
     override func createFetchedResultsController() -> NSFetchedResultsController<NSFetchRequestResult>? {
-        return ServicesManager.manager.databaseService?.fetchConversions(delegate: self)
+        return ServicesManager.manager.databaseService?.fetchConversions(delegate: self.conversionsResultsDelegate)
     }
 }
 
@@ -101,8 +107,9 @@ extension RatesTableViewController {
                 service?.dataProvider.removeConversion(source: object.sourceCode!, target: object.targetCode!, onError: {
                     [unowned self]
                     error in
-                    self.showNotificationError(error: error)
-                    return
+                    DispatchQueue.main.async {
+                        self.showNotificationError(error: error)
+                    }
                 })
             }
         }
@@ -111,38 +118,41 @@ extension RatesTableViewController {
 
 //MARK: NSFetchedResultsControllerDelegate
 extension RatesTableViewController {
-//    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        self.tableView.beginUpdates()
-//    }
-//    
-//    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-//        let indexSet = IndexSet(integer: sectionIndex)
-//        switch type {
-//        case .insert:
-//            tableView.insertSections(indexSet, with: .fade)
-//        case .delete:
-//            tableView.deleteSections(indexSet, with: .fade)
-//        default: break
-//            // nothing
-//        }
-//    }
-//    
-//    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//        
-//        switch type {
-//        case .insert:
-//            tableView.insertRows(at: [newIndexPath!], with: .fade)
-//        case .delete:
-//            tableView.deleteRows(at: [indexPath!], with: .fade)
-//        case .update:
-//            self.configure(cell: tableView.cellForRow(at: indexPath!), at: indexPath!)
-//        case .move:
-//            tableView.deleteRows(at: [indexPath!], with: .fade)
-//            tableView.insertRows(at: [newIndexPath!], with: .fade)
-//        }
-//    }
-//    
-//    override func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        self.tableView.endUpdates()
-//    }
+    class ConversionsFetchedResultsDelegate: NSObject, NSFetchedResultsControllerDelegate {
+        weak var ratesController: RatesTableViewController?
+        func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+            ratesController?.tableView.beginUpdates()
+        }
+        
+        func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+            let indexSet = IndexSet(integer: sectionIndex)
+            switch type {
+            case .insert:
+                ratesController?.tableView.insertSections(indexSet, with: .automatic)
+            case .delete:
+                ratesController?.tableView.deleteSections(indexSet, with: .automatic)
+            default: break
+                // nothing
+            }
+        }
+        
+        func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+            
+            switch type {
+            case .insert:
+                ratesController?.tableView.insertRows(at: [newIndexPath!], with: .automatic)
+            case .delete:
+                ratesController?.tableView.deleteRows(at: [indexPath!], with: .automatic)
+            case .update:
+                ratesController?.configure(cell: ratesController?.tableView.cellForRow(at: indexPath!), at: indexPath!)
+            case .move:
+                ratesController?.tableView.deleteRows(at: [indexPath!], with: .automatic)
+                ratesController?.tableView.insertRows(at: [newIndexPath!], with: .automatic)
+            }
+        }
+        
+        func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+            ratesController?.tableView.endUpdates()
+        }
+    }
 }

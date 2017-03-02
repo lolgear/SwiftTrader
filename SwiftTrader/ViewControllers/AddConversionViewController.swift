@@ -80,14 +80,20 @@ extension AddConversionViewController {
             [unowned self]
             (error) in
             errorOccured = error
-            self.showNotificationError(error: error)
+            DispatchQueue.main.async {
+                self.showNotificationError(error: error)
+            }
         }, completion: {
             [unowned self]
             (result, error) in
-            self.showNotificationError(error: error)
+            DispatchQueue.main.async {
+                self.showNotificationError(error: error)
+            }
             
             if error == nil && errorOccured == nil {
-                _ = self.navigationController?.popViewController(animated: true)
+                DispatchQueue.main.async {
+                    _ = self.navigationController?.popViewController(animated: true)
+                }
             }
         })
     }
