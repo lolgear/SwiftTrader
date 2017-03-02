@@ -77,6 +77,9 @@ class DebugDataProvider: DataProvider {
             if let currentError = error {
                 LoggingService.logError("\(self) \(#function) error: \(currentError.localizedDescription)")
             }
+            else {
+                LoggingService.logInfo("\(self) \(#function) result: \(result)")
+            }
         }
         super.updateQuotes(completion: theCompletion)
     }
@@ -94,6 +97,9 @@ class DebugDataProvider: DataProvider {
             if let currentError = error {
                 LoggingService.logError("\(self) \(#function) error: \(currentError.localizedDescription)")
             }
+            else {
+                LoggingService.logInfo("\(self) \(#function) result: \(result)")
+            }
         }
         super.addConversion(source: source, target: target, onError: theOnError, completion: theCompletion)
     }
@@ -110,6 +116,9 @@ class DebugDataProvider: DataProvider {
             completion?(result, error)
             if let currentError = error {
                 LoggingService.logError("\(self) \(#function) error: \(currentError.localizedDescription)")
+            }
+            else {
+                LoggingService.logInfo("\(self) \(#function) result: \(result)")
             }
         }
         super.removeConversion(source: source, target: target, onError: theOnError, completion: theCompletion)
