@@ -24,19 +24,13 @@ class DatabaseService: BaseService {
     var persistentContainer: NSPersistentContainer?
     var accidentError: Error?
     func checkStack() -> Bool {
-//        let checked = stack != nil && (stack?.model.entities.count)! > 0
-//        if checked {
-//            LoggingService.logError("\(self) Stack is not configured! Stack: \(stack) Model: \(stack?.model)")
-//        }
-//        return checked
         return persistentContainer != nil && accidentError == nil && context != nil
     }
-    func defaultContext() -> NSManagedObjectContext? {
+    func viewContext() -> NSManagedObjectContext? {
         return persistentContainer?.viewContext
-//        return DatabaseSupplement.defaultContext(coordinator: self.persistentContainer?.persistentStoreCoordinator)
     }
     lazy var context: NSManagedObjectContext? = {
-        return self.defaultContext()
+        return self.viewContext()
     }()
 }
 
@@ -62,10 +56,25 @@ extension DatabaseService {
         return DatabaseSupplement.currencies(context: context)
     }
     func save(block:@escaping ((NSManagedObjectContext?) -> Void), completion: ((Bool, Error?) -> Void)?) {
-        guard checkStack(), let context = context else {
+        guard checkStack() else {
             return
         }
-        DatabaseSupplement.save(block: block, context: context, completion: completion)
+        
+        
+        self.persistentContainer?.performBackgroundTask({ (backgroundContext) in
+            do {
+                try autoreleasepool {
+                    block(backgroundContext)
+                    //        DatabaseSupplement.save(block: block, context: theContext, completion: completion)
+                    try backgroundContext.save()
+                    completion?(true, nil)
+                }
+            }
+            catch let error {
+                completion?(false, error)
+            }
+        })
+
     }
 }
 
@@ -139,6 +148,7 @@ extension DatabaseService {
             (description, error) in
             self.accidentError = error
         })
+        persistentContainer?.viewContext.automaticallyMergesChangesFromParent = true
     }
     
     override func tearDown() {
