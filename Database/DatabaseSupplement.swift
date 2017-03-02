@@ -78,11 +78,11 @@ extension DatabaseSupplement {
     static func save(block:@escaping ((NSManagedObjectContext?) -> Void), context theContext: NSManagedObjectContext, identifier: String, completion: ((Bool, Error?) -> Void)?) {
         MR_saveQueue().async {
             autoreleasepool {
-                block(theContext)
-                //            let context = self.confinementContext()
-                //            context.persistentStoreCoordinator = theContext.persistentStoreCoordinator
-                //            context.mr_setWorkingName(identifier)
-                //            block(context)
+//                block(theContext)
+                let context = self.confinementContext()
+                context.persistentStoreCoordinator = theContext.persistentStoreCoordinator
+                context.mr_setWorkingName(identifier)
+                block(context)
                 let saveOptions: MRContextSaveOptions = [.saveParentContexts, .saveSynchronously]
                 let currentCompletion: (Bool, Error?) -> () = { (result, error) in
                     completion?(result, error)
