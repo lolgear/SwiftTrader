@@ -57,7 +57,7 @@ extension Quote : SourcesAndTargetsProtocol {
             let Y = targetQuote.quote
             
             let prevX = sourceQuote.previousQuote
-            let prevY = sourceQuote.previousQuote
+            let prevY = targetQuote.previousQuote
                         
             let correctQuote = Y / X
             let correctPreviousQuote = prevX == 0 ? 0 : prevY / prevX
