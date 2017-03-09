@@ -21,13 +21,13 @@ class DatabaseService: BaseService {
         }
     }
 //    var stack: MagicalRecordStack?
-    var persistentContainer: NSPersistentContainer?
+    var container: DatabaseContainerProtocol?
     var accidentError: Error?
     func checkStack() -> Bool {
-        return persistentContainer != nil && accidentError == nil && context != nil
+        return container != nil && accidentError == nil && context != nil
     }
     func viewContext() -> NSManagedObjectContext? {
-        return persistentContainer?.viewContext
+        return container?.viewContext()
     }
     lazy var context: NSManagedObjectContext? = {
         return self.viewContext()
@@ -59,22 +59,7 @@ extension DatabaseService {
         guard checkStack() else {
             return
         }
-        
-        
-        self.persistentContainer?.performBackgroundTask({ (backgroundContext) in
-            do {
-                try autoreleasepool {
-                    block(backgroundContext)
-                    //        DatabaseSupplement.save(block: block, context: theContext, completion: completion)
-                    try backgroundContext.save()
-                    completion?(true, nil)
-                }
-            }
-            catch let error {
-                completion?(false, error)
-            }
-        })
-
+        container?.save(block: block, completion: completion)
     }
 }
 
@@ -111,19 +96,6 @@ extension DatabaseService {
 }
 
 extension DatabaseService {
-    func modelUrl() -> URL? {
-        guard let bundle = Bundle(identifier: "com.opensource.Database") else {
-            return nil
-        }
-        
-        guard let modelUrl = bundle.url(forResource: "Database", withExtension: "momd") else {
-            return nil
-        }
-        return modelUrl
-    }
-    func model() -> NSManagedObjectModel? {
-        return NSManagedObjectModel(at: modelUrl())
-    }
     func mr_setup() {
         // fucking magical record
         
@@ -139,21 +111,13 @@ extension DatabaseService {
     }
     
     override func setup() {
-        guard let model = model() else {
-            return
-        }
-        persistentContainer = NSPersistentContainer(name: "Database", managedObjectModel: model)
-        persistentContainer?.loadPersistentStores(completionHandler: {
-            [unowned self]
-            (description, error) in
-            self.accidentError = error
-        })
-        persistentContainer?.viewContext.automaticallyMergesChangesFromParent = true
+        container = DatabaseContainer.container()
+        container?.setup()
     }
     
     override func tearDown() {
         do {
-            try persistentContainer?.viewContext.save()
+            try container?.viewContext()?.save()
         }
         catch let error {
             LoggingService.logError("\(self) \(#function) error: \(error)")
