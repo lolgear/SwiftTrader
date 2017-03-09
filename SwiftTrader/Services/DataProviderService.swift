@@ -24,13 +24,14 @@ extension DataProviderService {
 }
 
 extension DataProviderService {
-    var updateTimeInterval: TimeInterval { return 30 }
+    var updateTimeInterval: TimeInterval { return ApplicationSettingsStorage.loaded().updateTime }
     func startTimer() {
         guard timer == nil else {
             LoggingService.logVerbose("timer already started!")
             return
         }
         
+        LoggingService.logVerbose("timer started with interval(\(DateComponentsFormatters.stringFromTimeInterval(interval: updateTimeInterval)))")
         timer = Timer.scheduledTimer(withTimeInterval: updateTimeInterval, repeats: true) {
             [unowned self]
             (timer) in

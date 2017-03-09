@@ -156,3 +156,8 @@ extension RatesTableViewController {
         }
     }
 }
+
+//MARK: Routing
+extension RatesTableViewController {
+    @IBAction func prepareForUnwind(segue: UIStoryboardSegue) {}
+}

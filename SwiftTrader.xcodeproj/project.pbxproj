@@ -46,6 +46,8 @@
 		04F6238A1E61D2A800953AD2 /* RatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F623891E61D2A800953AD2 /* RatesTableViewCell.swift */; };
 		0A2BA82D1E7157B00089C0D1 /* DatabaseProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA82C1E7157B00089C0D1 /* DatabaseProtocols.swift */; };
 		0A2BA82F1E7158580089C0D1 /* DatabaseContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2BA82E1E7158580089C0D1 /* DatabaseContainer.swift */; };
+		0AFEDCAC1E719609006A5F42 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AFEDCAB1E719609006A5F42 /* SettingsTableViewController.swift */; };
+		0AFEDCAE1E71A734006A5F42 /* ApplicationSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AFEDCAD1E71A734006A5F42 /* ApplicationSettingsStorage.swift */; };
 		2C1634EB2C87C6020D7EFF6F /* Pods_SwiftTrader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5947667C7DC3E8156E44698 /* Pods_SwiftTrader.framework */; };
 		2F8EC0A5A93B390B1FA59338 /* Pods_Database.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBAD8240567E5DAFF2BA68A6 /* Pods_Database.framework */; };
 		B7A229FB6D8792BAB699761C /* Pods_Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15FCEFA12DA3672577EAA355 /* Pods_Network.framework */; };
@@ -125,6 +127,8 @@
 		04F623891E61D2A800953AD2 /* RatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatesTableViewCell.swift; sourceTree = "<group>"; };
 		0A2BA82C1E7157B00089C0D1 /* DatabaseProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseProtocols.swift; sourceTree = "<group>"; };
 		0A2BA82E1E7158580089C0D1 /* DatabaseContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseContainer.swift; sourceTree = "<group>"; };
+		0AFEDCAB1E719609006A5F42 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		0AFEDCAD1E71A734006A5F42 /* ApplicationSettingsStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationSettingsStorage.swift; sourceTree = "<group>"; };
 		1183AD870CDE63AA32CFD64E /* Pods-Network.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Network.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Network/Pods-Network.debug.xcconfig"; sourceTree = "<group>"; };
 		15FCEFA12DA3672577EAA355 /* Pods_Network.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Network.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		78CB079ED5D9342D8F39CA78 /* Pods-Network.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Network.release.xcconfig"; path = "Pods/Target Support Files/Pods-Network/Pods-Network.release.xcconfig"; sourceTree = "<group>"; };
@@ -211,6 +215,7 @@
 				04841C131E61C20800A961F9 /* CurrenciesTableViewController.swift */,
 				04841C0D1E61B22300A961F9 /* BaseTableViewController.swift */,
 				04F623871E61D18100953AD2 /* UIViewController+Extensions.swift */,
+				0AFEDCAB1E719609006A5F42 /* SettingsTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				04DBA79D1E63613E000232BF /* ConversionModel.swift */,
+				0AFEDCAD1E71A734006A5F42 /* ApplicationSettingsStorage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -614,9 +620,11 @@
 				04DBA79E1E63613E000232BF /* ConversionModel.swift in Sources */,
 				0415977C1E60A17100833A8F /* NetworkService.swift in Sources */,
 				04841C141E61C20800A961F9 /* CurrenciesTableViewController.swift in Sources */,
+				0AFEDCAC1E719609006A5F42 /* SettingsTableViewController.swift in Sources */,
 				04841C121E61BF1300A961F9 /* AddConversionViewController.swift in Sources */,
 				04DBA7A21E6433D3000232BF /* DataProviderService.swift in Sources */,
 				04C5980D1E5F438E00EEFB70 /* AppDelegate.swift in Sources */,
+				0AFEDCAE1E71A734006A5F42 /* ApplicationSettingsStorage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
