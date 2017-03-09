@@ -118,4 +118,10 @@ extension ServicesManager: UIApplicationDelegate {
         }
     }
 
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        for service in servicesUIDelegates() {
+            service.application?(application, performFetchWithCompletionHandler: completionHandler)
+        }
+    }
+    
 }
