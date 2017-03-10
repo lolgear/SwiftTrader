@@ -25,6 +25,7 @@ extension DataProviderService {
 
 extension DataProviderService {
     var updateTimeInterval: TimeInterval { return ApplicationSettingsStorage.loaded().updateTime }
+    var backgroundFetchEnabled: Bool { return ApplicationSettingsStorage.loaded().backgroundFetch }
     func startTimer() {
         guard timer == nil else {
             LoggingService.logVerbose("timer already started!")
@@ -49,6 +50,12 @@ extension DataProviderService {
 extension DataProviderService {
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LoggingService.logVerbose("\(self) \(#function) perform background fetch!")
+        
+        guard backgroundFetchEnabled else {
+            LoggingService.logVerbose("\(self) \(#function) background fetch disabled!")
+            return
+        }
+        
         self.dataProvider.updateQuotes { (result, error) in
             if result {
                 completionHandler(.newData)

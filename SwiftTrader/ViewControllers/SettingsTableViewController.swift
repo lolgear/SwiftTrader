@@ -21,9 +21,16 @@ class DateComponentsFormatters {
     }
 }
 
+protocol DataSourceModelEnums {
+    static func from(identifier: String?) -> Self?
+    func identifier() -> String?
+}
 // ViewModel
+
+
 class SettingsDataSourceModel {
-    let settings = ApplicationSettingsStorage()
+    
+    //Items
     class Item {
         weak var model: SettingsDataSourceModel!
         var cell: UITableViewCell!
@@ -36,7 +43,7 @@ class SettingsDataSourceModel {
     class VariantsItem: Item {
         var variants: [AnyObject]?
         var userVariants: [String]?
-        enum Variants {
+        enum Variants: DataSourceModelEnums {
             case updateTime
             
             static func from(identifier: String?) -> Variants? {
@@ -45,16 +52,17 @@ class SettingsDataSourceModel {
                 }
                 
                 switch id {
-                case "identifier.updateTime": return .updateTime
+                case "identifier.variants.updateTime": return .updateTime
                 default: return nil
                 }
             }
             
             func identifier() -> String? {
                 switch self {
-                case .updateTime: return "identifier.updateTime"
+                case .updateTime: return "identifier.variants.updateTime"
                 }
             }
+            
             static let updateTimeVariantsArray = [
                 // 30 seconds
                 30,
@@ -77,6 +85,7 @@ class SettingsDataSourceModel {
                 // 24 hours = 3600 * 24
                 86400
             ]
+            
             func variants() -> [AnyObject]? {
                 switch self {
                 case .updateTime: return Variants.updateTimeVariantsArray as [AnyObject]?
@@ -108,6 +117,64 @@ class SettingsDataSourceModel {
         }
     }
     
+    class SwitchItem: Item {
+        enum Switches: DataSourceModelEnums {
+            static func from(identifier: String?) -> Switches? {
+                guard let id = identifier else {
+                    return nil
+                }
+                
+                switch id {
+                case "identifier.switches.backgroundFetch": return .backgroundFetch
+                default: return nil
+                }
+            }
+            
+            func identifier() -> String? {
+                switch self {
+                case .backgroundFetch: return "identifier.switches.backgroundFetch"
+                }
+            }
+            
+            case backgroundFetch
+            
+            
+        }
+        
+        func controlValueChanged(sender: UISwitch, forIdentifier identifier: String?) {
+            if let theSwitch = Switches.from(identifier: identifier) {
+                switch theSwitch {
+                case .backgroundFetch: model.settings.backgroundFetch = sender.isOn
+                }
+            }
+        }
+        
+        @objc func controlValueChanged(sender: UISwitch) {
+            self.controlValueChanged(sender: sender, forIdentifier: self.identifier)
+        }
+        
+        override func update() {
+            if let theSwitch = Switches.from(identifier: identifier) {
+                let switchControl = cell.accessoryView as? UISwitch
+                switch theSwitch {
+                case .backgroundFetch: switchControl?.isOn = model.settings.backgroundFetch
+                }
+            }
+        }
+        
+        class func create(switches: Switches, cell: UITableViewCell!) -> SwitchItem {
+            let switchItem = SwitchItem()
+            switchItem.identifier = switches.identifier()
+            switchItem.cell = cell
+            
+            (switchItem.cell.accessoryView as? UISwitch)?.addTarget(switchItem, action: #selector(controlValueChanged(sender:)), for: .valueChanged)
+            return switchItem
+        }
+    }
+    
+    //Application Settings
+    let settings = ApplicationSettingsStorage()
+    
     private var items: [Item]?
     var newItems: [Item]? {
         get {
@@ -130,7 +197,7 @@ class SettingsDataSourceModel {
     
     func updateModel(index: Int, identifier: String?) {
         // switch over identifiers
-        if let variant = SettingsDataSourceModel.VariantsItem.Variants.from(identifier: identifier), let value = variant.variants()?[index] as? Int {
+        if let variant = VariantsItem.Variants.from(identifier: identifier), let value = variant.variants()?[index] as? Int {
             switch variant {
             case .updateTime: settings.updateTime = TimeInterval(value)
             }
@@ -143,6 +210,7 @@ class SettingsDataSourceModel {
 }
 class SettingsTableViewController: UITableViewController {
     let leftRightCellReuseIdentifier = "leftRightCellReuseIdentifier"
+    let switchCellReuseIdentifier = "switchCellReuseIdentifier"
     let dataSourceModel = SettingsDataSourceModel()
     // cells
     var updateTimeTableViewCell: UITableViewCell!
@@ -159,8 +227,14 @@ class SettingsTableViewController: UITableViewController {
         // add localization later?
         updateTimeCell.textLabel?.text = "Update Time"
         
+        // Background Fetch
+        let backgroundFetchEnabledCell = UITableViewCell(style: .default, reuseIdentifier: switchCellReuseIdentifier)
+        backgroundFetchEnabledCell.textLabel?.text = "Background Fetch Enabled"
+        backgroundFetchEnabledCell.accessoryView = UISwitch()
+        
         // at the end
-        dataSourceModel.newItems = [SettingsDataSourceModel.VariantsItem.create(variants: .updateTime, cell: updateTimeCell)]
+        dataSourceModel.newItems = [SettingsDataSourceModel.VariantsItem.create(variants: .updateTime, cell: updateTimeCell), SettingsDataSourceModel.SwitchItem.create(switches: .backgroundFetch, cell: backgroundFetchEnabledCell)
+        ]
     }
     
     override func viewWillAppear(_ animated: Bool) {
