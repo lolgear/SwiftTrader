@@ -16,13 +16,16 @@ public protocol Quotable {
     var sourceCode: String? {get}
     var targetCode: String? {get}
 }
+public extension Quotable {
+    public var trend: Double {
+        return self.previousQuote == 0 ? 0 : self.quote - self.previousQuote
+    }
+}
 public struct VirtualQuote: Quotable {
     public var quote: Double
     public var previousQuote: Double
     public var timestamp: Double
-    public var trend: Double {
-        return self.quote - self.previousQuote
-    }
+
     public var sourceCode: String?
     public var targetCode: String?
 }
@@ -134,12 +137,6 @@ extension Quote {
         else {
             try? insert(source: source, target: target, quote: quote, timestamp: timestamp, context: context)
         }
-    }
-}
-
-extension Quote {
-    public var trend : Double {
-        return self.quote - self.previousQuote
     }
 }
 
