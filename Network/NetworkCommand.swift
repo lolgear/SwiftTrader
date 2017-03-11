@@ -8,18 +8,22 @@
 import Alamofire
 import Foundation
 public class Command {
-//    var shouldStopError: NSError? {
-//        return Network.ErrorFactory.createError(errorMessage: shouldStopMessage)
-//    }
+    
     public init() {
     }
+    
+    var shouldStopError: Error?
     
     var shouldStop: Bool {
         return shouldStopMessage != nil
     }
+    
+    var shouldStopMessage: String? {
+        return shouldStopError?.localizedDescription
+    }
 
-    var shouldStopMessage: String?
-
+    var configuration: Configuration? // assign from somewhere before use
+    
     // override by subclasses
     var method: Alamofire.HTTPMethod = .get
     var path: String = ""
@@ -36,7 +40,11 @@ public class Command {
 public class APICommand : Command {
     override func queryParameters() -> [String : AnyObject]? {
         var result = super.queryParameters()
-        result?["access_key"] = Configuration.apiAccessKey as AnyObject?
+        guard configuration != nil else {
+            shouldStopError = ErrorFactory.createError(errorType: .theInternal("Configuration did not set!" as AnyObject?))
+            return result
+        }
+        result?["access_key"] = configuration?.apiAccessKey as AnyObject?
         return result
     }
 }

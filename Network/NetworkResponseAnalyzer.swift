@@ -22,7 +22,7 @@ class ResponseAnalyzer {
             return ErrorResponse(dictionary: response)
         }
         // try to recognize result somehow
-        return RatesResponse(dictionary: response)
+        return SuccessResponse(dictionary: response)?.blessed()
     }
     
     func analyze(response: Data?, context:[String : AnyObject]?, error: Error?) -> Response? {

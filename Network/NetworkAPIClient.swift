@@ -10,15 +10,25 @@ import Alamofire
 import Foundation
 
 public class APIClient {
-    public init () {}
+    public init(configuration theConfiguration: Configuration?) {
+        configuration = theConfiguration
+    }
+    
+    public func update(configuration theConfiguration: Configuration?) {
+        configuration = theConfiguration
+        reachabilityManager = ReachabilityManager(targetHost: configuration?.serverAddress ?? "")
+    }
+    
+    public private(set) var configuration: Configuration?
     lazy var analyzer = ResponseAnalyzer()
-    public lazy var reachabilityManager = ReachabilityManager(targetHost: Configuration.serverAddress)
+    public var reachabilityManager: ReachabilityManager?
+    
     func URLComponents(strings : String ...) -> String {
         return strings.joined(separator: "/")
     }
     
     func fullURL(path : String) -> String {
-        return URLComponents(strings: Configuration.serverAddress, path)
+        return URLComponents(strings: configuration?.serverAddress ?? "", path)
     }
     
     func executeOperation(method : Alamofire.HTTPMethod, path: String, parameters: [String : AnyObject]?, onResponse : @escaping (Response) -> ()) {
@@ -35,9 +45,14 @@ public class APIClient {
     }
     
     public func executeCommand(command : Command, onResponse : @escaping (Response) -> ()) {
+        command.configuration = configuration
         let method = command.method
         let path = command.path
         let parameters = command.queryParameters()
+        if let error = command.shouldStopError {
+            onResponse(ErrorResponse(error: error))
+            return
+        }
         executeOperation(method: method, path: path, parameters: parameters, onResponse: onResponse)
     }
 }

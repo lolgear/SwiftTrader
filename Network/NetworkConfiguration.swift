@@ -7,7 +7,15 @@
 //
 
 import Foundation
-class Configuration {
-    static let serverAddress = "http://apilayer.net/api"
-    static let apiAccessKey = "f8a9b90bc6525a28e131b47630a60abc"
+public struct Configuration {
+    public var serverAddress:String = "http://apilayer.net/api"
+    public var apiAccessKey:String = ""
+    public init(serverAddress theServerAddress: String, apiAccessKey theApiAccessKey: String) {
+        serverAddress = theServerAddress
+        apiAccessKey = theApiAccessKey
+    }
+    public init(apiAccessKey theApiAccessKey: String) {
+        apiAccessKey = theApiAccessKey
+    }
+    public init() {}
 }

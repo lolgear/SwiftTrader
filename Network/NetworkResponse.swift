@@ -23,7 +23,25 @@ public class Response {
  [...]
  }
  */
-public class ListCurrenciesResponse : Response {
+public class SuccessResponse : Response {
+    class func blessed(dictionary : [String : AnyObject]) -> SuccessResponse? {
+        // register and determine?
+        if let response = RatesResponse(dictionary: dictionary) {
+            return response
+        }
+        
+        if let response = ListCurrenciesResponse(dictionary: dictionary) {
+            return response
+        }
+        return nil
+    }
+    
+    func blessed() -> SuccessResponse? {
+        return SuccessResponse.blessed(dictionary: self.dictionary)
+    }
+}
+
+public class ListCurrenciesResponse : SuccessResponse {
     var currencies : [String : String] = [:]
     var currenciesCodes : [String] {
         return Array(currencies.keys)
@@ -61,7 +79,7 @@ public class ListCurrenciesResponse : Response {
  */
 
 // Quotes are String -> Double
-public class RatesResponse : Response {
+public class RatesResponse : SuccessResponse {
     public var timestamp : Double = 0
     public var source : String = ""
     var dirtyQuotes : [String : Double] = [:]

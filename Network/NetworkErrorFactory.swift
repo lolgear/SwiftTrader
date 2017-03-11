@@ -13,12 +13,14 @@ public class ErrorFactory {
         case responseIsEmpty        
         case unknown
         case couldNotParse(AnyObject?)
+        case theInternal(AnyObject?)
         var code : Int {
             switch self {
             case .couldNotConnectToServer: return -100
             case .responseIsEmpty: return -101
             case .unknown: return -102
             case .couldNotParse(_): return -103
+            case .theInternal: return -104
             }
         }
         var message : String {
@@ -27,6 +29,7 @@ public class ErrorFactory {
             case .responseIsEmpty: return "aware! response is empty!"
             case .unknown: return "something wrong? unknown"
             case let .couldNotParse(item): return "could not parse item: \(item)"
+            case let .theInternal(item): return "internal error: \(item)"
             }
         }
     }
