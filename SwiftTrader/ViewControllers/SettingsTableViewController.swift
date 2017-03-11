@@ -11,6 +11,9 @@ import UIKit
 protocol VariantsChosenProtocol: NSObjectProtocol {
     func didSelect(item: String?, atIndex index: Int, withIdentifier identifier: String?)
 }
+protocol BackToParentProtocol: NSObjectProtocol {
+    func didReturn(item: AnyObject?, at indexPath: IndexPath?, withIdentifier identifier: String?, returnValue value: AnyObject?)
+}
 class DateComponentsFormatters {
     class func stringFromTimeInterval(interval: TimeInterval) -> String? {
         let formatter = DateComponentsFormatter()
@@ -163,12 +166,65 @@ class SettingsDataSourceModel {
         }
         
         class func create(switches: Switches, cell: UITableViewCell!) -> SwitchItem {
-            let switchItem = SwitchItem()
-            switchItem.identifier = switches.identifier()
-            switchItem.cell = cell
+            let item = SwitchItem()
+            item.identifier = switches.identifier()
+            item.cell = cell
             
-            (switchItem.cell.accessoryView as? UISwitch)?.addTarget(switchItem, action: #selector(controlValueChanged(sender:)), for: .valueChanged)
-            return switchItem
+            (item.cell.accessoryView as? UISwitch)?.addTarget(item, action: #selector(controlValueChanged(sender:)), for: .valueChanged)
+            return item
+        }
+    }
+    
+    class InputItem: Item {
+        enum Inputs: DataSourceModelEnums {
+            static func from(identifier: String?) -> Inputs? {
+                guard let id = identifier else {
+                    return nil
+                }
+                
+                switch id {
+                case "identifier.inputs.networkAPIKey": return .networkAPIKey
+                default: return nil
+                }
+            }
+            
+            func identifier() -> String? {
+                switch self {
+                case .networkAPIKey: return "identifier.inputs.networkAPIKey"
+                }
+            }
+            
+            case networkAPIKey
+        }
+        
+        var label: String?
+        var placeholder: String?
+        var text: String? {
+            guard let theInput = Inputs.from(identifier: self.identifier) else {
+                return nil
+            }
+            switch theInput {
+            case .networkAPIKey: return model.settings.networkAPIKey
+            }
+        }
+        
+        override func update() {
+            let view = cell.detailTextLabel
+            if let theInput = Inputs.from(identifier: identifier) {
+                switch theInput {
+                case .networkAPIKey: view?.text = model.settings.networkAPIKey
+                    
+                }
+            }
+        }
+        
+        class func create(inputs: Inputs, cell: UITableViewCell!, label: String?, placeholder: String?) -> InputItem {
+            let item = InputItem()
+            item.identifier = inputs.identifier()
+            item.label = label
+            item.placeholder = placeholder
+            item.cell = cell
+            return item
         }
     }
     
@@ -195,22 +251,42 @@ class SettingsDataSourceModel {
         updateView()
     }
     
-    func updateModel(index: Int, identifier: String?) {
+    func updateModel(index: Int, identifier: String?, value: AnyObject?) {
         // switch over identifiers
-        if let variant = VariantsItem.Variants.from(identifier: identifier), let value = variant.variants()?[index] as? Int {
-            switch variant {
-            case .updateTime: settings.updateTime = TimeInterval(value)
+        if let theVariant = VariantsItem.Variants.from(identifier: identifier) {
+            guard let variantValue = theVariant.variants()?[index] else {
+                return
             }
+            switch theVariant {
+            case .updateTime:
+                if let theValue = variantValue as? Int {
+                    settings.updateTime = TimeInterval(theValue)
+                }
+            }
+            return
+        }
+        
+        if let theInput = InputItem.Inputs.from(identifier: identifier) {
+            switch theInput {
+            case .networkAPIKey: 
+                if let theValue = value as? String {
+                    settings.networkAPIKey = theValue
+                }
+            }
+            return
         }
     }
     
-    func save() {
+    func save() {        
         settings.save()
     }
 }
 class SettingsTableViewController: UITableViewController {
-    let leftRightCellReuseIdentifier = "leftRightCellReuseIdentifier"
-    let switchCellReuseIdentifier = "switchCellReuseIdentifier"
+    enum cellReuseIdentifiers: String {
+        case theLeftRight
+        case theSwitch
+        case theTextField
+    }
     let dataSourceModel = SettingsDataSourceModel()
     // cells
     var updateTimeTableViewCell: UITableViewCell!
@@ -223,17 +299,21 @@ class SettingsTableViewController: UITableViewController {
     
     func setupViewModel() {
         // Update Time
-        let updateTimeCell = UITableViewCell(style: .value1, reuseIdentifier: leftRightCellReuseIdentifier)
+        let updateTimeCell = UITableViewCell(style: .value1, reuseIdentifier: cellReuseIdentifiers.theLeftRight.rawValue)
         // add localization later?
         updateTimeCell.textLabel?.text = "Update Time"
         
         // Background Fetch
-        let backgroundFetchEnabledCell = UITableViewCell(style: .default, reuseIdentifier: switchCellReuseIdentifier)
+        let backgroundFetchEnabledCell = UITableViewCell(style: .default, reuseIdentifier: cellReuseIdentifiers.theSwitch.rawValue)
         backgroundFetchEnabledCell.textLabel?.text = "Background Fetch Enabled"
         backgroundFetchEnabledCell.accessoryView = UISwitch()
         
+        // NetworkAPIKey
+        let networkAPIKeyCell = UITableViewCell(style: .value1, reuseIdentifier: cellReuseIdentifiers.theTextField.rawValue)
+        networkAPIKeyCell.textLabel?.text = "Network API Key"
+        networkAPIKeyCell.accessoryView = UILabel()
         // at the end
-        dataSourceModel.newItems = [SettingsDataSourceModel.VariantsItem.create(variants: .updateTime, cell: updateTimeCell), SettingsDataSourceModel.SwitchItem.create(switches: .backgroundFetch, cell: backgroundFetchEnabledCell)
+        dataSourceModel.newItems = [SettingsDataSourceModel.VariantsItem.create(variants: .updateTime, cell: updateTimeCell), SettingsDataSourceModel.SwitchItem.create(switches: .backgroundFetch, cell: backgroundFetchEnabledCell), SettingsDataSourceModel.InputItem.create(inputs: .networkAPIKey, cell: networkAPIKeyCell, label: "API Key", placeholder: "Input API Key")
         ]
     }
     
@@ -272,6 +352,11 @@ extension SettingsTableViewController {
                 let controller = VariantsTableViewController.variants(items: variantItem.userVariants, variantsChosen: self, identifier: variantItem.identifier)
                 self.navigationController?.pushViewController(controller, animated: true)
             }
+            
+            if let inputItem = item as? SettingsDataSourceModel.InputItem {
+                let controller = InputViewController.input(label: inputItem.label, placeholder: inputItem.placeholder, text: inputItem.text, identifier: inputItem.identifier, backTo: self)
+                self.navigationController?.pushViewController(controller, animated: true)
+            }
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -280,7 +365,7 @@ extension SettingsTableViewController {
 //MARK: VariantsChosenProtocol
 extension SettingsTableViewController: VariantsChosenProtocol {
     func didSelect(item: String?, atIndex index: Int, withIdentifier identifier: String?) {
-        dataSourceModel.updateModel(index: index, identifier: identifier)
+        dataSourceModel.updateModel(index: index, identifier: identifier, value: nil)
     }
 }
 
@@ -327,6 +412,95 @@ extension SettingsTableViewController {
             variantsChosen?.didSelect(item: variants[indexPath.row], atIndex: indexPath.row, withIdentifier: identifier)
             tableView.deselectRow(at: indexPath, animated: true)
             _ = self.navigationController?.popViewController(animated: true)
+        }
+    }
+}
+
+//MARK: BackToParentProtocol
+extension SettingsTableViewController: BackToParentProtocol {
+    func didReturn(item: AnyObject?, at indexPath: IndexPath?, withIdentifier identifier: String?, returnValue value: AnyObject?) {
+        guard let theIndexPath = indexPath else {
+            return
+        }
+        
+        dataSourceModel.updateModel(index: theIndexPath.row, identifier: identifier, value: value)
+    }
+}
+
+//MARK: Input
+extension SettingsTableViewController {
+    class InputViewController: UITableViewController {
+        private let textFieldStartTag = 100
+        private var label: String?
+        private var placeholder: String?
+        private var text: String?
+        private var identifier: String?
+        private var backTo: BackToParentProtocol?
+        
+        private var cells: [UITableViewCell]!
+        private let cellReuseIdentifier = "cellReuseIdentifier"
+        
+        class func input(label: String?, placeholder: String?, text: String?, identifier: String?, backTo delegate:BackToParentProtocol?) -> InputViewController {
+            let controller = InputViewController(style: .grouped)
+            controller.label = label
+            controller.placeholder = placeholder
+            controller.text = text
+            controller.identifier = identifier
+            controller.backTo = delegate
+            return controller
+        }
+        
+        func setupController() {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
+            self.title = label
+        }
+        
+        func setupCells() {
+            let cell = UITableViewCell(style: .default, reuseIdentifier: cellReuseIdentifier)
+            var insets = UIEdgeInsets()
+            insets.left = 8
+            insets.right = insets.left
+            let textField = UITextField(frame: CGRect(x: insets.left, y: 0, width: cell.contentView.frame.width - (insets.left + insets.right), height: cell.contentView.frame.height))
+            textField.placeholder = placeholder
+            textField.text = text
+            textField.tag = textFieldStartTag
+            // cheats :3
+            cell.contentView.addSubview(textField)
+            cells = [cell]
+        }
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            self.setupController()
+            self.setupCells()
+        }
+        
+        //MARK: Actions
+        @objc func doneButtonPressed() {
+            let indexPath = IndexPath(row: 0, section: 0)
+            let cell = cells[indexPath.row]
+            let textField = cell.viewWithTag(textFieldStartTag) as? UITextField
+            let text = textField?.text
+            backTo?.didReturn(item: nil, at: indexPath, withIdentifier: identifier, returnValue: text as AnyObject)
+            _ = self.navigationController?.popViewController(animated: true)
+        }
+        
+        //MARK: UITableViewDataSource
+        override func numberOfSections(in tableView: UITableView) -> Int {
+            return 1
+        }
+        
+        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return cells.count
+        }
+        
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            return cells[indexPath.row]
+        }
+        
+        //MARK: UITableViewDelegate
+        override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
 }
