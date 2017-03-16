@@ -8,6 +8,8 @@
 
 import Foundation
 import CoreData
+import EncryptedCoreData
+
 public protocol DatabaseContainerProtocol {
     func checkStack() -> Bool
     func viewContext() -> NSManagedObjectContext?
@@ -61,33 +63,35 @@ public class DatabaseContainer: DatabaseContainerProtocol {
 }
 
 extension DatabaseContainer {
+    func getBundle() -> Bundle? {
+        return Bundle(for: DatabaseContainer.self)
+    }
     func getLibraryDirectoryUrl() -> URL? {
         let urls = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
         return urls.count > 0 ? urls[urls.count - 1] : nil
     }
 
-    func getDatabaseName() -> String {
-        return Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? "Database"
+    func getDatabaseName() -> String? {
+        return getBundle()?.infoDictionary?[kCFBundleNameKey as String] as? String
     }
 
+    func getDatabaseExtension() -> String? {
+        return "sqlite"
+    }
     func getDatabaseUrl() -> URL? {
-        guard let url = self.getLibraryDirectoryUrl() else {
+        guard let url = self.getLibraryDirectoryUrl(), let databaseName = getDatabaseName(), let databaseExtension = getDatabaseExtension() else {
             return nil
         }
         
-        let databaseName = getDatabaseName()
-        let result = url.appendingPathComponent(databaseName).appendingPathExtension("sqlite")
-        
-        return result
+        return url.appendingPathComponent(databaseName).appendingPathExtension(databaseExtension)
     }
     
     
     func getManagedObjectModel() -> NSManagedObjectModel? {
-        let url = Bundle(for: DatabaseContainer.self).url(forResource: "Database", withExtension: "momd")
-        guard let modelUrl = url else {
+        guard let url = getBundle()?.url(forResource: "Database", withExtension: "momd") else {
             return nil
         }
-        return NSManagedObjectModel(at: modelUrl)
+        return NSManagedObjectModel(at: url)
     }
 }
 
@@ -108,13 +112,23 @@ class DatabaseContainerModern: DatabaseContainer {
     var accidentError: Error?
     var container: NSPersistentContainer?
     func getPersistentStoreContainer() -> NSPersistentContainer? {
-        let databaseName = getDatabaseName()
+        guard let databaseName = getDatabaseName() else {
+            return nil
+        }
         
         guard let model = getManagedObjectModel() else {
             return nil
         }
         
+        guard let databaseUrl = getDatabaseUrl() else {
+            return nil
+        }
+        
         let container = NSPersistentContainer(name: databaseName, managedObjectModel: model)
+        
+        let storeDescription = NSPersistentStoreDescription(url: databaseUrl)
+        storeDescription.type = EncryptedStoreType
+        container.persistentStoreDescriptions = [storeDescription]
         container.loadPersistentStores(completionHandler: {
             [unowned self]
             (description, error) in
