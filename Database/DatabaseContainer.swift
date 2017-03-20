@@ -17,6 +17,10 @@ public protocol DatabaseContainerProtocol {
     func setup()
 }
 
+internal protocol DatabaseContainerWithEncryptionProtocol {
+    func getKey(url: URL) -> String
+}
+
 public class DatabaseContainer: DatabaseContainerProtocol {
     init() {
     }
@@ -51,9 +55,9 @@ public class DatabaseContainer: DatabaseContainerProtocol {
     public func setup() {}
     public class func container() -> DatabaseContainerProtocol? {
         if #available(iOS 10, *) {
-            return DatabaseContainerModern()
+            return DatabaseContainerModern_Encryption()//DatabaseContainerModern()
         }
-        return DatabaseContainerPrior10()
+        return DatabaseContainerPrior10_Encryption()
     }
     
     // Protected
@@ -124,11 +128,13 @@ class DatabaseContainerModern: DatabaseContainer {
             return nil
         }
         
+        return getPersistentStoreContainer(databaseName: databaseName, databaseURL: databaseUrl, model: model)
+    }
+    
+    func getPersistentStoreContainer(databaseName: String, databaseURL: URL, model: NSManagedObjectModel) -> NSPersistentContainer {
         let container = NSPersistentContainer(name: databaseName, managedObjectModel: model)
         
-        let storeDescription = NSPersistentStoreDescription(url: databaseUrl)
-        storeDescription.type = EncryptedStoreType
-        container.persistentStoreDescriptions = [storeDescription]
+        container.persistentStoreDescriptions = persistentStores(at: [databaseURL], names: [databaseName])
         container.loadPersistentStores(completionHandler: {
             [unowned self]
             (description, error) in
@@ -138,8 +144,42 @@ class DatabaseContainerModern: DatabaseContainer {
         return container
     }
     
+    func persistentStores(at urls: [URL], names: [String]) -> [NSPersistentStoreDescription] {
+        return urls.map { NSPersistentStoreDescription(url: $0) }
+    }
+    
     override func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
         container?.performBackgroundTask(block)
+    }
+}
+
+class DatabaseContainerModern_Encryption: DatabaseContainerModern {
+    func persistentStore(at url: URL, name: String) -> NSPersistentStoreDescription? {
+        let configuration = EncryptedStoreFileManagerConfiguration()
+        configuration.databaseURL = url
+        configuration.databaseName = name
+        configuration.bundle = getBundle()
+        var options = [
+            EncryptedStore.optionPassphraseKey() : getKey(url: url),
+            ] as [String : Any]
+        
+        if let fileManager = EncryptedStoreFileManager(configuration: configuration) {
+            options[EncryptedStore.optionFileManager()] = fileManager
+        }
+        
+        return try? EncryptedStore.makeDescription(options: options, configuration: nil)
+    }
+    
+    override func persistentStores(at urls: [URL], names: [String]) -> [NSPersistentStoreDescription] {
+        return urls.flatMap {
+            persistentStore(at: $0, name: names.first!)
+        }
+    }
+}
+
+extension DatabaseContainerModern_Encryption : DatabaseContainerWithEncryptionProtocol {
+    func getKey(url: URL) -> String {
+        return "123123123"
     }
 }
 
@@ -169,12 +209,15 @@ class DatabaseContainerPrior10: DatabaseContainer {
         guard let databaseUrl = self.getDatabaseUrl() else {
             return nil
         }
-        
+        return getPersistentStoreCoordinator(url: databaseUrl, model: managedObjectModel)
+    }
+    
+    func getPersistentStoreCoordinator(url: URL, model: NSManagedObjectModel) -> NSPersistentStoreCoordinator {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel:
-            managedObjectModel)
+            model)
         
         do {
-            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: databaseUrl, options: [NSMigratePersistentStoresAutomaticallyOption: true,                                                                                                                    NSInferMappingModelAutomaticallyOption: true])
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: [NSMigratePersistentStoresAutomaticallyOption: true,                                                                                                                    NSInferMappingModelAutomaticallyOption: true])
         }
         catch let error {
             accidentError = error
@@ -203,5 +246,37 @@ class DatabaseContainerPrior10: DatabaseContainer {
         context.perform {
             block(context)
         }
+    }
+}
+
+class DatabaseContainerPrior10_Encryption: DatabaseContainerPrior10 {
+    override func getPersistentStoreCoordinator(url: URL, model: NSManagedObjectModel) -> NSPersistentStoreCoordinator {
+        let configuration = EncryptedStoreFileManagerConfiguration()
+        configuration.databaseURL = url
+        configuration.bundle = getBundle()
+        var options = [
+            EncryptedStore.optionPassphraseKey() : getKey(url: url),
+            ] as [String : Any]
+        
+        if let fileManager = EncryptedStoreFileManager(configuration: configuration) {
+            options[EncryptedStore.optionFileManager()] = fileManager
+        }
+
+        
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+        do {
+            try coordinator.addPersistentStore(ofType: EncryptedStore.optionType()!, configurationName: nil, at: url, options: [NSMigratePersistentStoresAutomaticallyOption: true,                                                                                                                    NSInferMappingModelAutomaticallyOption: true])
+        }
+        catch let error {
+            accidentError = error
+        }
+        
+        return coordinator
+    }
+}
+
+extension DatabaseContainerPrior10_Encryption : DatabaseContainerWithEncryptionProtocol {
+    func getKey(url: URL) -> String {
+        return "123123123"
     }
 }
