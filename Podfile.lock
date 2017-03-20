@@ -3,25 +3,38 @@ PODS:
   - CocoaLumberjack/Default (3.1.0)
   - CocoaLumberjack/Swift (3.1.0):
     - CocoaLumberjack/Default
+  - EncryptedCoreData (3.1):
+    - SQLCipher (~> 3.4.0)
   - MagicalRecord (3.0.0.dev.1488212089):
     - MagicalRecord/Core (= 3.0.0.dev.1488212089)
   - MagicalRecord/Core (3.0.0.dev.1488212089)
   - SnapKit (3.2.0)
+  - SQLCipher (3.4.1):
+    - SQLCipher/standard (= 3.4.1)
+  - SQLCipher/common (3.4.1)
+  - SQLCipher/standard (3.4.1):
+    - SQLCipher/common
   - SwiftMessages (3.1.5)
 
 DEPENDENCIES:
   - Alamofire
   - CocoaLumberjack/Swift
+  - EncryptedCoreData (from `https://github.com/project-imas/encrypted-core-data`)
   - MagicalRecord (from `https://github.com/magicalpanda/MagicalRecord.git`, branch `release/3.0`)
   - SnapKit
   - SwiftMessages
 
 EXTERNAL SOURCES:
+  EncryptedCoreData:
+    :git: https://github.com/project-imas/encrypted-core-data
   MagicalRecord:
     :branch: release/3.0
     :git: https://github.com/magicalpanda/MagicalRecord.git
 
 CHECKOUT OPTIONS:
+  EncryptedCoreData:
+    :commit: 4d24a78f9d1ccfe5d3cc41a8c9b1382003505c69
+    :git: https://github.com/project-imas/encrypted-core-data
   MagicalRecord:
     :commit: b1e621cf0557d5d1f245658ae9adb6004081bef6
     :git: https://github.com/magicalpanda/MagicalRecord.git
@@ -29,10 +42,12 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   CocoaLumberjack: 8311463ddf9ee86a06ef92a071dd656c89244500
+  EncryptedCoreData: f6762fb05f88a52f36c5648659abc91b57f244b4
   MagicalRecord: 0ca92cabc3e496538be1c7b1a95e1678f7496fb0
   SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
+  SQLCipher: 43d12c0eb9c57fb438749618fc3ce0065509a559
   SwiftMessages: bb85d7c30e85256f9367214b0907e1f409e1870a
 
-PODFILE CHECKSUM: ac6ae1c6be16f780662bcd41eaeb43ea3e70734e
+PODFILE CHECKSUM: e184b27060e2deefc64a3c485d35f09c0b0d5773
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.2.0

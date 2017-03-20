@@ -4,6 +4,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 def datalayer
 	# database management
     pod 'MagicalRecord', git:'https://github.com/magicalpanda/MagicalRecord.git' ,branch: 'release/3.0'
+    pod 'EncryptedCoreData', git: 'https://github.com/project-imas/encrypted-core-data'
 end
 
 def networklayer
