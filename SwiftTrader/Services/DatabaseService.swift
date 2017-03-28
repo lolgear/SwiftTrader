@@ -112,12 +112,13 @@ extension DatabaseService {
     
     override func setup() {
         container = DatabaseContainer.container()
-        container?.setup()
+        container?.setupStack()
     }
     
     override func tearDown() {
         do {
             try container?.viewContext()?.save()
+            container?.cleanupStack()
         }
         catch let error {
             LoggingService.logError("\(self) \(#function) error: \(error)")
