@@ -14,7 +14,8 @@ public protocol DatabaseContainerProtocol {
     func checkStack() -> Bool
     func viewContext() -> NSManagedObjectContext?
     func save(block:@escaping ((NSManagedObjectContext?) -> Void), completion: ((Bool, Error?) -> Void)?)
-    func setup()
+    func setupStack()
+    func cleanupStack()
 }
 
 internal protocol DatabaseContainerWithEncryptionProtocol {
@@ -52,7 +53,8 @@ public class DatabaseContainer: DatabaseContainerProtocol {
         }
     }
     
-    public func setup() {}
+    public func setupStack() {}
+    public func cleanupStack() {}
     public class func container() -> DatabaseContainerProtocol? {
         if #available(iOS 10, *) {
             return DatabaseContainerModern_Encryption()//DatabaseContainerModern()
@@ -109,8 +111,12 @@ class DatabaseContainerModern: DatabaseContainer {
         return container?.viewContext
     }
     
-    public override func setup() {
+    public override func setupStack() {
         container = getPersistentStoreContainer()
+    }
+    
+    public override func cleanupStack() {
+        container = nil
     }
     
     var accidentError: Error?
@@ -192,9 +198,14 @@ class DatabaseContainerPrior10: DatabaseContainer {
         return mainContext
     }
     
-    public override func setup() {
+    public override func setupStack() {
         coordinator = getPersistentStoreCoordinator()
         mainContext = getMainContext()
+    }
+    
+    public override func cleanupStack() {
+        coordinator = nil
+        mainContext = nil
     }
     
     var accidentError: Error?
