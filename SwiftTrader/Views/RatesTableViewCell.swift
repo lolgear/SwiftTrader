@@ -55,7 +55,7 @@ class Formatters {
     
     class func attributedTrend(trend: Double, formatted: String) -> NSAttributedString {
         return NSAttributedString(string: "(\(formatted))", attributes: [
-            NSForegroundColorAttributeName : self.colorForTrend(trend: trend)
+            NSAttributedStringKey.foregroundColor : self.colorForTrend(trend: trend)
             ])
     }
     

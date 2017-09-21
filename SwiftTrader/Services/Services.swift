@@ -25,7 +25,7 @@ class BaseService: NSObject {
 }
 
 extension BaseService: ServicesInfoProtocol {
-    var health: Bool {
+    @objc var health: Bool {
         return false
     }
     static var name: String {
@@ -34,8 +34,8 @@ extension BaseService: ServicesInfoProtocol {
 }
 
 extension BaseService: ServicesSetupProtocol {
-    func setup() {}
-    func tearDown() {}
+    @objc func setup() {}
+    @objc func tearDown() {}
 }
 
 extension BaseService: UIApplicationDelegate {

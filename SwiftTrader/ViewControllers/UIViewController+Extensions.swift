@@ -14,7 +14,7 @@ extension UIViewController {
         guard let currentError = error else {
             return
         }
-        let view = MessageView.viewFromNib(layout: .TabView)
+        let view = MessageView.viewFromNib(layout: .tabView)
         view.configureTheme(.error)
         view.button?.isHidden = true
         view.configureContent(title: "Error", body: currentError.localizedDescription, iconImage: nil, iconText: nil, buttonImage: nil, buttonTitle: nil, buttonTapHandler: nil)

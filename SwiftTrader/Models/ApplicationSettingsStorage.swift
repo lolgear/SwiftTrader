@@ -71,7 +71,7 @@ class ApplicationSettingsStorage {
     }
     
     func load() {
-        if let storedSettings = UserDefaults.standard.dictionary(forKey: storeIdentifier) as? [String : AnyObject] {
+        if let storedSettings = UserDefaults.standard.dictionary(forKey: storeIdentifier) as [String : AnyObject]? {
             settings = storedSettings
         }
     }

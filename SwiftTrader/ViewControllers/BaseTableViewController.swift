@@ -11,16 +11,12 @@ import UIKit
 import CoreData
 class BaseTableViewController: UITableViewController {
     
-    //MARK: Refresh
+    //MARK: Refresh Control
     var refreshControlItem: UIRefreshControl?
     func createRefreshControl() -> UIRefreshControl {
         let control = UIRefreshControl()
         control.addTarget(self, action: #selector(refresh(sender:)), for: .valueChanged)
         return control
-    }
-    
-    func refresh(sender: UIRefreshControl?) {
-        
     }
     
     override func viewDidLoad() {
@@ -46,9 +42,16 @@ class BaseTableViewController: UITableViewController {
     }()
 }
 
+//MARK: Refresh
+extension BaseTableViewController {
+    @objc func refresh(sender: UIRefreshControl?) {
+        
+    }
+}
+
 //MARK: FetchedResultsController
 extension BaseTableViewController {
-    func createFetchedResultsController() -> NSFetchedResultsController<NSFetchRequestResult>? {
+    @objc func createFetchedResultsController() -> NSFetchedResultsController<NSFetchRequestResult>? {
         return nil
     }
 }

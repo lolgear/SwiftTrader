@@ -32,7 +32,7 @@ extension DataProviderService {
             return
         }
         
-        LoggingService.logVerbose("timer started with interval(\(DateComponentsFormatters.stringFromTimeInterval(interval: updateTimeInterval)))")
+        LoggingService.logVerbose("timer started with interval(\(String(describing: DateComponentsFormatters.stringFromTimeInterval(interval: updateTimeInterval))))")
         timer = Timer.scheduledTimer(withTimeInterval: updateTimeInterval, repeats: true) {
             [unowned self]
             (timer) in

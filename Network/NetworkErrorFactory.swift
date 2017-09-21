@@ -28,8 +28,8 @@ public class ErrorFactory {
             case .couldNotConnectToServer: return "could not connect to server!"
             case .responseIsEmpty: return "aware! response is empty!"
             case .unknown: return "something wrong? unknown"
-            case let .couldNotParse(item): return "could not parse item: \(item)"
-            case let .theInternal(item): return "internal error: \(item)"
+            case let .couldNotParse(item): return "could not parse item: \(String(describing: item))"
+            case let .theInternal(item): return "internal error: \(String(describing: item))"
             }
         }
     }
