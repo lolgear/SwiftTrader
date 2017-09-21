@@ -35,7 +35,7 @@ public class ErrorFactory {
     }
     
     // MARK: Constants
-    public static let domain: String = "com.opensource.network.swift_trader"
+    public static let domain: String = "org.opensource.network.swift_trader"
     
     // MARK: Create errors
     public static func createError(errorType type:Errors) -> Error? {

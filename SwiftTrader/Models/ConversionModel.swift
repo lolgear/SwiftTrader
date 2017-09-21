@@ -12,7 +12,7 @@ struct ConversionModel {
     var toCode: String?
     
     enum Errors: Int {
-        static let domain = "com.opensource.business.swift_trader"
+        static let domain = "org.opensource.business.swift_trader"
         case missing
         case equal
         var message: String {

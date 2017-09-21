@@ -8,7 +8,7 @@
 
 import Foundation
 enum Errors {
-    static let domain = "com.opensource.database.swift_trader"
+    static let domain = "org.opensource.database.swift_trader"
     case invalidPair(String, String)
     case pairExists(String, String)
     var code : Int {
