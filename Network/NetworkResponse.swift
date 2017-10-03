@@ -139,7 +139,7 @@ public class ErrorResponse : Response {
     var info = ""
     var error: Error?
     public var descriptiveError : Error? {
-        return error ?? NSError(domain: ErrorFactory.domain, code: code, userInfo: [NSLocalizedDescriptionKey : info])
+        return error ?? NSError(domain: ErrorFactory.Errors.domain, code: code, userInfo: [NSLocalizedDescriptionKey : info])
     }
     public init(error: Error) {
         super.init(dictionary: [:])!
