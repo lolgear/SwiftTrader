@@ -29,12 +29,12 @@ public struct VirtualQuote: Quotable {
     public var sourceCode: String?
     public var targetCode: String?
 }
-extension Quote : Quotable {}
-extension Quote : SourcesAndTargetsProtocol {
+extension Quote: Quotable {}
+extension Quote: SourcesAndTargetsProtocol {
     static func find(source: String, target: String, context: NSManagedObjectContext) -> NSManagedObject? {
-        return Quote.ldm_findFirst(with: sourceAndTargetPredicate(source: source, target: target), in: context)
+        return ldm_findFirst(with: sourceAndTargetPredicate(source: source, target: target), in: context)
     }
-    public static func virtualFind(source: String, target: String, context: NSManagedObjectContext) -> Quotable? {
+    public class func virtualFind(source: String, target: String, context: NSManagedObjectContext) -> Quotable? {
         if virtual(source: source, target: target) {
             // create in context?
             // find correct items
@@ -79,11 +79,10 @@ extension Quote : SourcesAndTargetsProtocol {
 }
 
 extension Quote {
-    class var baseCode : String {
+    class var baseCode: String {
         return DatabaseSettings.baseCode
     }
     
-    // update quote?
     func firstUpdate() -> Bool {
         return timestamp == 0
     }
@@ -97,8 +96,6 @@ extension Quote {
             self.quote = quote
         }
         else {
-            //TODO: fix later.
-            //Known bug: bad access.
             self.previousQuote = self.quote
             self.quote = quote
         }
@@ -141,7 +138,7 @@ extension Quote {
 }
 
 extension Quote {
-    static func aggregated(theCurrencies: [Any]?) -> [String] {
+    class func aggregated(theCurrencies: [Any]?) -> [String] {
         
         guard let currencies = theCurrencies else {
             return []
@@ -156,7 +153,7 @@ extension Quote {
         return result
     }
     
-    static func currencies(context: NSManagedObjectContext) -> [String] {
+    class func currencies(context: NSManagedObjectContext) -> [String] {
         let all = Quote.ldm_findAll(in: context)
         return aggregated(theCurrencies: all)
     }    

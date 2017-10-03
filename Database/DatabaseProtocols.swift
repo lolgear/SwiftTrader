@@ -13,12 +13,9 @@ protocol SourcesAndTargetsProtocol {
     static func find(source: String, target: String, context: NSManagedObjectContext) -> NSManagedObject?
 }
 
+//MARK: Pair validation
 extension SourcesAndTargetsProtocol {
-    static func sourceAndTargetPredicate(source: String, target: String) -> NSPredicate {
-        let sourcePredicate = NSPredicate(format: "sourceCode = %@", argumentArray: [source])
-        let targetPredicate = NSPredicate(format: "targetCode = %@", argumentArray: [target])
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [sourcePredicate, targetPredicate])
-    }
+
     
     static func validPair(source: String, target: String) throws -> Bool {
         guard source != target else {
@@ -32,5 +29,25 @@ extension SourcesAndTargetsProtocol {
             throw Errors.pairExists(source, target).error
         }
         return true
+    }
+}
+
+//MARK: Predicates
+extension SourcesAndTargetsProtocol {
+    static func sourcePredicate(value: String) -> NSPredicate {
+        let sourcePredicate = NSPredicate(format: "sourceCode = %@", argumentArray: [value])
+        return sourcePredicate
+    }
+    
+    static func targetPredicate(value: String) -> NSPredicate {
+        let targetPredicate = NSPredicate(format: "targetCode = %@", argumentArray: [value])
+        return targetPredicate
+    }
+    
+    // For source in target conversion.
+    static func sourceAndTargetPredicate(source: String, target: String) -> NSPredicate {
+        let left = sourcePredicate(value: source)
+        let right = targetPredicate(value: target)
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [left, right])
     }
 }

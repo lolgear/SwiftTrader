@@ -13,7 +13,7 @@ import EncryptedCoreData
 public protocol DatabaseContainerProtocol {
     func checkStack() -> Bool
     func viewContext() -> NSManagedObjectContext?
-    func save(block:@escaping ((NSManagedObjectContext?) -> Void), completion: ((Bool, Error?) -> Void)?)
+    func save(block: @escaping ((NSManagedObjectContext?) -> Void), completion: ((Bool, Error?) -> Void)?)
     func setupStack()
     func cleanupStack()
 }
@@ -23,8 +23,7 @@ internal protocol DatabaseContainerWithEncryptionProtocol {
 }
 
 public class DatabaseContainer: DatabaseContainerProtocol {
-    init() {
-    }
+    init() {}
     
     public func checkStack() -> Bool {
         return false
@@ -70,7 +69,7 @@ public class DatabaseContainer: DatabaseContainerProtocol {
 
 extension DatabaseContainer {
     func getBundle() -> Bundle? {
-        return Bundle(for: DatabaseContainer.self)
+        return Bundle(for: type(of: self))
     }
     func getLibraryDirectoryUrl() -> URL? {
         let urls = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
@@ -121,6 +120,7 @@ class DatabaseContainerModern: DatabaseContainer {
     
     var accidentError: Error?
     var container: NSPersistentContainer?
+    
     func getPersistentStoreContainer() -> NSPersistentContainer? {
         guard let databaseName = getDatabaseName() else {
             return nil

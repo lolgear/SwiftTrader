@@ -11,19 +11,19 @@ enum Errors {
     static let domain = "org.opensource.database.swift_trader"
     case invalidPair(String, String)
     case pairExists(String, String)
-    var code : Int {
+    var code: Int {
         switch self {
         case .invalidPair(_, _): return -300
         case .pairExists(_, _): return -301
         }
     }
-    var message : String {
+    var message: String {
         switch self {
         case let .invalidPair(lhs, rhs): return "Invalid pair(\(lhs) , \(rhs))! Same items can not be proceeded!"
         case let .pairExists(lhs, rhs): return "Pair(\(lhs), \(rhs)) already exists!"
         }
     }
-    var error : Error {
-        return NSError(domain: Errors.domain, code: code, userInfo: [NSLocalizedDescriptionKey : message])
+    var error: Error {
+        return NSError(domain: type(of: self).domain, code: code, userInfo: [NSLocalizedDescriptionKey : message])
     }
 }

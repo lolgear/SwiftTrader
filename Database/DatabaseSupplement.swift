@@ -28,31 +28,31 @@ public class DatabaseSettings {
 }
 
 public class DatabaseSupplement {
-    public static func fetchConversions(delegate: NSFetchedResultsControllerDelegate, context: NSManagedObjectContext) -> NSFetchedResultsController<NSFetchRequestResult> {
+    public class func fetchConversions(delegate: NSFetchedResultsControllerDelegate, context: NSManagedObjectContext) -> NSFetchedResultsController<NSFetchRequestResult> {
         return Conversion.ldm_fetchAllSorted(by: "addedAt", ascending: true, with: nil, groupBy: nil, delegate: delegate, context: context)
     }
-    public static func fetchQuotes(delegate: NSFetchedResultsControllerDelegate, context: NSManagedObjectContext) -> NSFetchedResultsController<NSFetchRequestResult> {
+    public class func fetchQuotes(delegate: NSFetchedResultsControllerDelegate, context: NSManagedObjectContext) -> NSFetchedResultsController<NSFetchRequestResult> {
         return Quote.ldm_fetchAllSorted(by: "targetCode", ascending: true, with: nil, groupBy: nil, delegate: delegate, context: context)
     }
     
-    public static func currencies(context: NSManagedObjectContext) -> [String] {
+    public class func currencies(context: NSManagedObjectContext) -> [String] {
         return Quote.currencies(context: context).sorted()
     }
 }
 
 //MARK: Contexts
 extension DatabaseSupplement {
-    static func newConfinementContext() -> NSManagedObjectContext {
+    class func newConfinementContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext.mr_confinement()
         let workingName = context.mr_workingName().appending(" \(stackName())");
         context.mr_setWorkingName(workingName)
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
     }
-    static func stackName() -> String {
+    class func stackName() -> String {
         return "Database"
     }
-    public static func defaultContext(coordinator: NSPersistentStoreCoordinator?) -> NSManagedObjectContext {
+    public class func defaultContext(coordinator: NSPersistentStoreCoordinator?) -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -63,19 +63,19 @@ extension DatabaseSupplement {
 
 //MARK: Save
 extension DatabaseSupplement {
-    static func confinementContext() -> NSManagedObjectContext {
+    class func confinementContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext.mr_confinement()
         let workingName = context.mr_workingName().appending(" Database");
         context.mr_setWorkingName(workingName)
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
     }
-    public static func save(block:@escaping ((NSManagedObjectContext?) -> Void), context: NSManagedObjectContext, completion: ((Bool, Error?) -> Void)?) {
+    public class func save(block:@escaping ((NSManagedObjectContext?) -> Void), context: NSManagedObjectContext, completion: ((Bool, Error?) -> Void)?) {
         let identifier = #function
         save(block: block, context: context, identifier: identifier, completion: completion)
     }
     
-    static func save(block:@escaping ((NSManagedObjectContext?) -> Void), context theContext: NSManagedObjectContext, identifier: String, completion: ((Bool, Error?) -> Void)?) {
+    class func save(block:@escaping ((NSManagedObjectContext?) -> Void), context theContext: NSManagedObjectContext, identifier: String, completion: ((Bool, Error?) -> Void)?) {
         MR_saveQueue().async {
             autoreleasepool {
 //                block(theContext)
