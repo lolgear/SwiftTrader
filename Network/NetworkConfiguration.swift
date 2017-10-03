@@ -8,8 +8,8 @@
 
 import Foundation
 public struct Configuration {
-    public var serverAddress:String = "http://apilayer.net/api"
-    public var apiAccessKey:String = ""
+    public var serverAddress = "http://apilayer.net/api"
+    public var apiAccessKey = ""
     public init(serverAddress theServerAddress: String, apiAccessKey theApiAccessKey: String) {
         serverAddress = theServerAddress
         apiAccessKey = theApiAccessKey

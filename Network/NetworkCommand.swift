@@ -9,8 +9,7 @@ import Alamofire
 import Foundation
 public class Command {
     
-    public init() {
-    }
+    public init() {}
     
     var shouldStopError: Error?
     
@@ -22,12 +21,12 @@ public class Command {
         return shouldStopError?.localizedDescription
     }
 
-    var configuration: Configuration? // assign from somewhere before use
+    var configuration: Configuration? // assign somewhere before use.
     
-    // override by subclasses
+    //MARK: Subclass
     var method: Alamofire.HTTPMethod = .get
-    var path: String = ""
-    var authorized: Bool = true
+    var path = ""
+    var authorized = true
     func queryParameters() -> [String : AnyObject]? {
         return [:]
     }
@@ -37,7 +36,7 @@ public class Command {
 // Params : {
 //    "access_key" : "YOUR_ACCESS_KEY"
 // }
-public class APICommand : Command {
+public class APICommand: Command {
     override func queryParameters() -> [String : AnyObject]? {
         var result = super.queryParameters()
         guard configuration != nil else {
@@ -48,19 +47,19 @@ public class APICommand : Command {
         return result
     }
 }
-public class ListCurrenciesCommand : APICommand {
+public class ListCurrenciesCommand: APICommand {
     public override init() {
         super.init()
         path = "list"
     }
 }
-public class LiveRatesCommand : APICommand {
+public class LiveRatesCommand: APICommand {
     public override init() {
         super.init()
         path = "live"
     }
 }
-public class HistoricalRatesCommand : APICommand {
+public class HistoricalRatesCommand: APICommand {
     public override init() {
         super.init()
         path = "historical"

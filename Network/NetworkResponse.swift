@@ -7,9 +7,12 @@
 //
 
 import Foundation
+
+// Maybe declare as protocol?
 public class Response {
-    var dictionary : [String : AnyObject] = [:]
-    public init?(dictionary : [String : AnyObject]) {
+    public typealias DictionaryPayloadType = [String : AnyObject]
+    var dictionary: DictionaryPayloadType = [:]
+    public init?(dictionary: DictionaryPayloadType) {
         self.dictionary = dictionary
     }
 }
@@ -23,8 +26,8 @@ public class Response {
  [...]
  }
  */
-public class SuccessResponse : Response {
-    class func blessed(dictionary : [String : AnyObject]) -> SuccessResponse? {
+public class SuccessResponse: Response {
+    class func blessed(dictionary: DictionaryPayloadType) -> SuccessResponse? {
         // register and determine?
         if let response = RatesResponse(dictionary: dictionary) {
             return response
@@ -41,12 +44,12 @@ public class SuccessResponse : Response {
     }
 }
 
-public class ListCurrenciesResponse : SuccessResponse {
-    var currencies : [String : String] = [:]
-    var currenciesCodes : [String] {
+public class ListCurrenciesResponse: SuccessResponse {
+    var currencies: [String : String] = [:]
+    var currenciesCodes: [String] {
         return Array(currencies.keys)
     }
-    public override init?(dictionary: [String : AnyObject]) {
+    public override init?(dictionary: DictionaryPayloadType) {
         super.init(dictionary: dictionary)
         if let currencies = dictionary["currencies"] as? [String : String] {
             self.currencies = currencies
@@ -132,9 +135,9 @@ extension RatesResponse {
  }
  */
 public class ErrorResponse : Response {
-    var code : Int = 0
-    var info : String = ""
-    var error : Error?
+    var code: Int = 0
+    var info = ""
+    var error: Error?
     public var descriptiveError : Error? {
         return error ?? NSError(domain: ErrorFactory.domain, code: code, userInfo: [NSLocalizedDescriptionKey : info])
     }
@@ -143,7 +146,7 @@ public class ErrorResponse : Response {
         self.error = error
     }
     
-    public override init?(dictionary: [String : AnyObject]) {
+    public override init?(dictionary: DictionaryPayloadType) {
         super.init(dictionary: dictionary)
         
         guard dictionary["success"] as? Bool == false else {

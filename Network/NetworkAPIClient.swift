@@ -20,18 +20,18 @@ public class APIClient {
     }
     
     public private(set) var configuration: Configuration?
-    lazy var analyzer = ResponseAnalyzer()
     public var reachabilityManager: ReachabilityManager?
+    lazy var analyzer = ResponseAnalyzer()
     
-    func URLComponents(strings : String ...) -> String {
+    func URLComponents(strings: String ...) -> String {
         return strings.joined(separator: "/")
     }
     
-    func fullURL(path : String) -> String {
+    func fullURL(path: String) -> String {
         return URLComponents(strings: configuration?.serverAddress ?? "", path)
     }
     
-    func executeOperation(method : Alamofire.HTTPMethod, path: String, parameters: [String : AnyObject]?, onResponse : @escaping (Response) -> ()) {
+    func executeOperation(method: Alamofire.HTTPMethod, path: String, parameters: [String : AnyObject]?, onResponse: @escaping (Response) -> ()) {
         let url = fullURL(path: path)
         
         Alamofire.SessionManager.default.request(url, method: method, parameters: parameters).responseJSON { (response) in
@@ -44,7 +44,7 @@ public class APIClient {
         }
     }
     
-    public func executeCommand(command : Command, onResponse : @escaping (Response) -> ()) {
+    public func executeCommand(command: Command, onResponse: @escaping (Response) -> ()) {
         command.configuration = configuration
         let method = command.method
         let path = command.path

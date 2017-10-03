@@ -7,17 +7,41 @@
 //
 
 import Foundation
+
+protocol ResponseSerializer {
+    func serialize(data: Data) throws -> Any?
+}
+
 class ResponseAnalyzer {
+    enum contextKeys: String {
+        case reachable
+    }
     
     // response result tuple
     typealias ResponseTuple = (AnyObject?, NSError?)
     
-    enum contextKeys : String {
-        case reachable
+    class JSONSerializer: ResponseSerializer {
+        func serialize(data: Data) throws -> Any? {
+            return try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        }
     }
     
+    class XMLSerializer: ResponseSerializer {
+        func serialize(data: Data) throws -> Any? {
+            return nil
+        }
+    }
+    
+    // response serializer
+    var serializer: ResponseSerializer = JSONSerializer()
+    
+    init() {}
+}
+
+//MARK: analyzing
+extension ResponseAnalyzer {
     // analyze response
-    func analyze(response: [String : AnyObject], context:[String : AnyObject]?) -> Response? {
+    func analyze(response: [String : AnyObject], context: [String : AnyObject]?) -> Response? {
         guard successful(response: response) else {
             return ErrorResponse(dictionary: response)
         }
@@ -34,7 +58,8 @@ class ResponseAnalyzer {
             return ErrorResponse(error: ErrorFactory.createError(errorType: .responseIsEmpty)!)
         }
         
-        guard let responseObject = try? JSONSerialization.jsonObject(with: theResponse, options: .allowFragments) as? [String :  AnyObject] else {
+        
+        guard let responseObject = try? serializer.serialize(data: theResponse) as? [String : AnyObject] else {
             return ErrorResponse(error: ErrorFactory.createError(errorType: .couldNotParse(theResponse as AnyObject?))!)
         }
         return self.analyze(response: responseObject!, context: context)

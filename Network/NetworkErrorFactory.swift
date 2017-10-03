@@ -9,6 +9,7 @@
 import Foundation
 public class ErrorFactory {
     public enum Errors {
+        public static let domain = "org.opensource.network.swift_trader"
         case couldNotConnectToServer
         case responseIsEmpty        
         case unknown
@@ -33,32 +34,36 @@ public class ErrorFactory {
             }
         }
     }
-    
-    // MARK: Constants
-    public static let domain: String = "org.opensource.network.swift_trader"
-    
-    // MARK: Create errors
-    public static func createError(errorType type:Errors) -> Error? {
-        return createError(message: type.message, code: type.code)
+
+    // MARK: Init
+    public required init() {}
+}
+
+// MARK: Create errors
+extension ErrorFactory {
+    public class func createError(errorType type:Errors) -> Error? {
+        return self.init().createError(message: type.message, code: type.code)
     }
     
-    static func createError(message: String?, code: Int) -> Error? {
+    func createError(message: String?, code: Int) -> Error? {
         guard let description = message else {
             return nil
         }
-        let error = NSError(domain: domain, code: code, userInfo: [NSLocalizedDescriptionKey : description])
+        let error = NSError(domain: Errors.domain, code: code, userInfo: [NSLocalizedDescriptionKey : description])
         return createError(error: error as Error)
     }
     
-    static func createError(error: Error?) -> Error? {
+    func createError(error: Error?) -> Error? {
         guard let theError = error else {
             return nil
         }
         return customizeError(error: theError)
     }
-    
-    // MARK: Handle custom errors
-    static func customizeError(error: Error) -> Error {
+}
+
+// MARK: Subclass
+extension ErrorFactory {
+    func customizeError(error: Error) -> Error {
         return error
     }
 }
