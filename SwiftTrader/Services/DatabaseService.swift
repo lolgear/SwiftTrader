@@ -9,7 +9,6 @@
 import Foundation
 import Database
 import CoreData
-//import MagicalRecord
 
 class DatabaseService: BaseService {
     var baseCode: String {
@@ -20,7 +19,6 @@ class DatabaseService: BaseService {
             DatabaseSettings.baseCode = newValue
         }
     }
-//    var stack: MagicalRecordStack?
     var container: DatabaseContainerProtocol?
     var accidentError: Error?
     func checkStack() -> Bool {

@@ -65,6 +65,7 @@ class Formatters {
         return result
     }
 }
+
 class RatesTableViewCell : UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var trendLabel: UILabel!
