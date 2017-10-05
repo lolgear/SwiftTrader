@@ -19,17 +19,23 @@ class DatabaseService: BaseService {
             DatabaseSettings.baseCode = newValue
         }
     }
+    
     var container: DatabaseContainerProtocol?
     var accidentError: Error?
+    var supplement: DatabaseSupplement?
+    lazy var context: NSManagedObjectContext? = {
+        return self.viewContext()
+    }()
+}
+
+//MARK: Context and Stack.
+extension DatabaseService {
     func checkStack() -> Bool {
         return container != nil && accidentError == nil && context != nil
     }
     func viewContext() -> NSManagedObjectContext? {
         return container?.viewContext()
     }
-    lazy var context: NSManagedObjectContext? = {
-        return self.viewContext()
-    }()
 }
 
 //MARK: DatabaseSupplement
@@ -38,20 +44,19 @@ extension DatabaseService {
         guard checkStack(), let context = context else {
             return nil
         }
-        
-        return DatabaseSupplement.fetchConversions(delegate: delegate, context: context)
+        return supplement?.fetchConversions(delegate: delegate, context: context)
     }
     func fetchQuotes(delegate: NSFetchedResultsControllerDelegate) -> NSFetchedResultsController<NSFetchRequestResult>? {
         guard checkStack(), let context = context else {
             return nil
         }
-        return DatabaseSupplement.fetchQuotes(delegate: delegate, context: context)
+        return supplement?.fetchQuotes(delegate: delegate, context: context)
     }
     func currencies() -> [String] {
-        guard checkStack(), let context = context else {
+        guard checkStack(), let context = context, let theSupplement = supplement else {
             return []
         }
-        return DatabaseSupplement.currencies(context: context)
+        return theSupplement.currencies(context: context)
     }
     func save(block:@escaping ((NSManagedObjectContext?) -> Void), completion: ((Bool, Error?) -> Void)?) {
         guard checkStack() else {
@@ -94,23 +99,10 @@ extension DatabaseService {
 }
 
 extension DatabaseService {
-    func mr_setup() {
-        // fucking magical record
-        
-        // pass scheme name to it.
-//        guard let stack = MagicalRecord.setupAutoMigratingStack() else {
-//            return
-//        }
-//
-//        stack.model = NSManagedObjectModel(at: databaseUrl)
-//        stack.coordinator = stack.createCoordinator(options: nil)
-//        self.stack = stack
-//        MagicalRecordStack.setDefault(stack)
-    }
-    
     override func setup() {
         container = DatabaseContainer.container()
         container?.setupStack()
+        supplement = DatabaseSupplement()
     }
     
     override func tearDown() {
