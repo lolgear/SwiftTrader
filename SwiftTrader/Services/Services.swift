@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import CocoaLumberjack
-
 protocol ServicesInfoProtocol {
     var health: Bool {get}
     static var name: String {get}
@@ -21,7 +20,12 @@ protocol ServicesSetupProtocol {
 }
 
 class BaseService: NSObject {
-    
+    private class func accessService<T: BaseService>() -> T? {
+        return ServicesManager.manager.service(name: self.name) as? T
+    }
+    class func service() -> Self? {
+        return accessService()
+    }
 }
 
 extension BaseService: ServicesInfoProtocol {
@@ -53,6 +57,10 @@ class ServicesManager: NSObject {
     func service(name: String) -> BaseService? {
         return services.filter {type(of: $0).name == name}.first
     }
+    func typedService<T: BaseService>(name: String) -> T? {
+        let val = services.filter {type(of: $0).name == name}.first
+        return val as? T
+    }
     func setup() {
         for service in services as [ServicesSetupProtocol] {
             service.setup()
@@ -68,16 +76,20 @@ class ServicesManager: NSObject {
 //MARK: Accessors
 extension ServicesManager {
     var databaseService: DatabaseService? {
-        return service(name: DatabaseService.name) as? DatabaseService
+//        return service(name: DatabaseService.name) as? DatabaseService
+        return DatabaseService.service()
     }
     var dataProviderService: DataProviderService? {
-        return service(name: DataProviderService.name) as? DataProviderService
+//        return service(name: DataProviderService.name) as? DataProviderService
+        return DataProviderService.service()
     }
     var networkService: NetworkService? {
-        return service(name: NetworkService.name) as? NetworkService
+//        return service(name: NetworkService.name) as? NetworkService
+        return NetworkService.service()
     }
     var loggingService: LoggingService? {
-        return service(name: LoggingService.name) as? LoggingService
+//        return service(name: LoggingService.name) as? LoggingService
+        return LoggingService.service()
     }
 }
 
