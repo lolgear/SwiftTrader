@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Database
+import DatabaseBeaver
 import CoreData
 
 class DatabaseService: BaseService {
@@ -19,7 +19,7 @@ class DatabaseService: BaseService {
             DatabaseSettings.baseCode = newValue
         }
     }
-    
+
     var container: DatabaseContainerProtocol?
     var accidentError: Error?
     var supplement: DatabaseSupplement?
@@ -104,7 +104,7 @@ extension DatabaseService {
         container?.setupStack()
         supplement = DatabaseSupplement()
     }
-    
+
     override func tearDown() {
         do {
             try container?.viewContext()?.save()

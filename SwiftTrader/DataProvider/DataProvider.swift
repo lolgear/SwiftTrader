@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import Database
-import Network
+import DatabaseBeaver
+import NetworkWorm
 class DataProvider {
     func updateQuotes(completion: ((Bool,Error?) -> Void)? = nil) {
         let network = ServicesManager.manager.networkService

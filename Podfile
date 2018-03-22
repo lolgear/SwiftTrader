@@ -50,11 +50,11 @@ def appName
 end
 
 def networkLayerFramework
-	'Network'
+	'NetworkWorm'
 end
 
 def databaseLayerFramework
-	'Database'
+	'DatabaseBeaver'
 end
 
 target networkLayerFramework do

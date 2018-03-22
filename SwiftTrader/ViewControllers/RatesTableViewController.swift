@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
-import Database
+import DatabaseBeaver
 
 class RatesTableViewController : BaseTableViewController {
     var listener: NSFetchedResultsController<NSFetchRequestResult>?

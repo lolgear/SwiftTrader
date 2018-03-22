@@ -1,20 +1,20 @@
 PODS:
-  - Alamofire (4.5.1)
-  - CocoaLumberjack/Default (3.2.1)
-  - CocoaLumberjack/Swift (3.2.1):
+  - Alamofire (4.7.0)
+  - CocoaLumberjack/Default (3.4.1)
+  - CocoaLumberjack/Swift (3.4.1):
     - CocoaLumberjack/Default
   - EncryptedCoreData (3.1):
     - SQLCipher (~> 3.4.0)
-  - MagicalRecord (3.0.0.dev.1505979144):
-    - MagicalRecord/Core (= 3.0.0.dev.1505979144)
-  - MagicalRecord/Core (3.0.0.dev.1505979144)
+  - MagicalRecord (3.0.0.dev.1521742242):
+    - MagicalRecord/Core (= 3.0.0.dev.1521742242)
+  - MagicalRecord/Core (3.0.0.dev.1521742242)
   - SnapKit (4.0.0)
-  - SQLCipher (3.4.1):
-    - SQLCipher/standard (= 3.4.1)
-  - SQLCipher/common (3.4.1)
-  - SQLCipher/standard (3.4.1):
+  - SQLCipher (3.4.2):
+    - SQLCipher/standard (= 3.4.2)
+  - SQLCipher/common (3.4.2)
+  - SQLCipher/standard (3.4.2):
     - SQLCipher/common
-  - SwiftMessages (4.0.0)
+  - SwiftMessages (4.1.0)
 
 DEPENDENCIES:
   - Alamofire
@@ -36,18 +36,18 @@ CHECKOUT OPTIONS:
     :commit: b97ffaf2f19dad4d1558bc9b0668cc2e09d17347
     :git: https://github.com/project-imas/encrypted-core-data
   MagicalRecord:
-    :commit: b1e621cf0557d5d1f245658ae9adb6004081bef6
+    :commit: 14a5935b9852d285898555ebb405084077a362e5
     :git: https://github.com/magicalpanda/MagicalRecord.git
 
 SPEC CHECKSUMS:
-  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  CocoaLumberjack: 2800c03334042fe80589423c8d80e582dcaec482
+  Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
+  CocoaLumberjack: 2e258a064cacc8eb9a2aca318e24d02a0a7fd56d
   EncryptedCoreData: f6762fb05f88a52f36c5648659abc91b57f244b4
-  MagicalRecord: af64f00a2c01a78e2a2be5515abaefa081bbae2e
+  MagicalRecord: cdca8e58dd52eaa6257d4d7dbc0c975d7d1b04f7
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
-  SQLCipher: 43d12c0eb9c57fb438749618fc3ce0065509a559
-  SwiftMessages: cd565e0e7d095584be1770c012c6b5be4183b5ee
+  SQLCipher: f9fcf29b2e59ced7defc2a2bdd0ebe79b40d4990
+  SwiftMessages: 1bacc783c8f10bdfdc57c14860cae8a1f1fa6591
 
-PODFILE CHECKSUM: e012f3245f6544c348e5187bde35e52260f6c2d5
+PODFILE CHECKSUM: 2ae65cc4fff5e334ac58c2b80232c97e8c71d0ee
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0

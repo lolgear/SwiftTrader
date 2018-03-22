@@ -6,8 +6,10 @@
 //  Copyright © 2017 OpenSourceIO. All rights reserved.
 //
 
-import Network
+import NetworkWorm
 import Foundation
+import UIKit
+
 class NetworkService: BaseService {
     var client: APIClient!
     fileprivate func clientConfiguration() -> Configuration {
@@ -24,7 +26,7 @@ extension NetworkService {
 extension NetworkService {
     override func setup() {
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        
+
         client = APIClient(configuration: clientConfiguration())
         client.reachabilityManager?.startMonitoring()
     }
